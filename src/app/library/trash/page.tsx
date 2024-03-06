@@ -1,10 +1,10 @@
 import { CloudinaryResource } from '@/types/cloudinary';
-import { getAssetsByTag } from '@/lib/cloudinary';
+import { getAssetsByTags } from '@/lib/cloudinary';
 
 import MediaGallery from '@/components/MediaGallery';
 
 export default async function Home() {
-  const resources = await getAssetsByTag(String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG));
+  const { resources } = await getAssetsByTags(String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG));
   return (
     <div className="h-full mt-6">
       <MediaGallery

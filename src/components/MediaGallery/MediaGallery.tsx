@@ -19,6 +19,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 interface MediaGalleryProps {
   resources?: Array<CloudinaryResource>;
   tag?: string;
+  disableAssetNavigation?: boolean;
 }
 
 interface Creation {
@@ -27,7 +28,7 @@ interface Creation {
   url?: string;
 }
 
-const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) => {
+const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation = false }: MediaGalleryProps) => {
   const { resources, addResources } = useResources({ initialResources, tag });
 
   const [selected, setSelected] = useState<Array<string>>([]);

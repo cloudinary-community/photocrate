@@ -3,7 +3,7 @@
 import {  useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Image, Ban, PencilRuler, ScissorsSquareDashedBottom, RectangleHorizontal, Square, RectangleVertical, Loader2, Copy, Star } from 'lucide-react';
+import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Image, Ban, PencilRuler, ScissorsSquareDashedBottom, RectangleHorizontal, Square, RectangleVertical, Loader2, Copy, Star, History } from 'lucide-react';
 import { getCldImageUrl, CldImageProps } from 'next-cloudinary';
 
 import { CloudinaryResource } from '@/types/cloudinary';
@@ -40,6 +40,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
   const [version, setVersion] = useState(1);
 
   const isFavorite = resource.tags.includes(String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG));
+  const isTrash = resource.tags.includes(String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG));
 
   type Transformations = Omit<CldImageProps, "src" | "alt">;
   const transformations: Transformations = {}
@@ -263,6 +264,26 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
     });
 
     router.push('/library');
+  }
+
+  /**
+   * handleOnRestore
+   */
+
+  async function handleOnRestore() {
+    const tagsToUpdate = resource.tags.filter(tag => tag !== String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG))
+
+    const formData = new FormData();
+
+    formData.append('publicId', resource.public_id);
+    formData.append('tags', tagsToUpdate.join(','));
+
+    await fetch('/api/resources/tags/update', {
+      method: 'POST',
+      body: formData
+    });
+
+    router.refresh();
   }
 
   // Listen for clicks outside of the panel area and if determined
@@ -646,10 +667,10 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
         <div className="flex items-center gap-4">
           <ul>
             <li>
-              <Link href="/" className={`${buttonVariants({ variant: "ghost" })} text-white`}>
+              <button className={`${buttonVariants({ variant: "ghost" })} text-white`} onClick={() => router.back()}>
                 <ChevronLeft className="h-6 w-6" />
                 Back
-              </Link>
+              </button>
             </li>
           </ul>
         </div>
@@ -675,12 +696,22 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
               <span className="sr-only">Favorite</span>
             </Button>
           </li>
-          <li>
-            <Button variant="ghost" className="text-white" onClick={() => setDeletion({ state: 'confirm' })}>
-              <Trash2 className="h-6 w-6" />
-              <span className="sr-only">Delete</span>
-            </Button>
-          </li>
+          { !isTrash && (
+            <li>
+              <Button variant="ghost" className="text-white" onClick={() => setDeletion({ state: 'confirm' })}>
+                <Trash2 className="h-6 w-6" />
+                <span className="sr-only">Delete</span>
+              </Button>
+            </li>
+          )}
+          { isTrash && (
+            <li>
+              <Button variant="ghost" className="text-white" onClick={handleOnRestore}>
+                <History className="h-6 w-6" />
+                <span className="sr-only">Restore</span>
+              </Button>
+            </li>
+          )}
         </ul>
       </Container>
 
