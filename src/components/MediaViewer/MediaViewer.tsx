@@ -220,7 +220,6 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
    */
 
   async function handleOnFavoriteToggle() {
-
     let tagsToUpdate: Array<string>;
 
     if ( isFavorite ) {
@@ -251,16 +250,19 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
       state: 'deleting'
     });
 
+    const tagsToUpdate = [...resource.tags, String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)]
+
     const formData = new FormData();
 
     formData.append('publicId', resource.public_id);
+    formData.append('tags', tagsToUpdate.join(','));
 
-    await fetch('/api/delete', {
+    await fetch('/api/resources/tags/update', {
       method: 'POST',
       body: formData
-    })
+    });
 
-    router.push('/');
+    router.push('/library');
   }
 
   // Listen for clicks outside of the panel area and if determined

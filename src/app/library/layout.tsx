@@ -1,5 +1,5 @@
 import '@/app/globals.css';
-import { Image, Sparkles, Star } from 'lucide-react'
+import { Image, Sparkles, Star, Trash } from 'lucide-react'
 
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
@@ -31,6 +31,11 @@ export default function RootLayout({
                 icon: <Star className="w-5 h-5" />,
                 label: 'Favorites',
                 path: '/library/favorites'
+              },
+              {
+                icon: <Trash className="w-5 h-5" />,
+                label: 'Trash',
+                path: '/library/trash'
               },
             ]}
           />
