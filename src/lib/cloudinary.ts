@@ -35,6 +35,8 @@ export async function getAssetsByTags(tags: string | Array<string>, options?: Ge
   const { resources, total_count } = await cloudinary.search
     .expression(tagExpression)
     .with_field('tags')
+    // @todo temporary - should include pagination
+    .max_results(400)
     .execute();
 
   return {

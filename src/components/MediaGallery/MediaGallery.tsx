@@ -307,7 +307,8 @@ const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation
                           width={resource.width}
                           height={resource.height}
                           src={resource.public_id}
-                          alt="Cloudinary Logo"
+                          alt={`Image ${resource.public_id}`}
+                          format="auto"
                           sizes="(min-width: 768px) 33w, (min-width: 768px) 25w, (min-width: 1280px) 20w, 50w"
                         />
                       </Link>

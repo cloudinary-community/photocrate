@@ -3,6 +3,8 @@ import { getAssetsByTags } from '@/lib/cloudinary';
 
 import MediaGallery from '@/components/MediaGallery';
 
+export const revalidate = 10;
+
 export default async function Home() {
   const { resources } = await getAssetsByTags(String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG), {
     excludeTags: [String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)]
