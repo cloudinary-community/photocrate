@@ -41,11 +41,11 @@ export function useResources(options?: UseResources) {
 
       return { previousResources }
     },
-    // onError: (err, newResources, context) => {
-    //   queryClient.setQueryData(['resources'], context?.previousResources)
-    // },
+    onError: (err, newResources, context) => {
+      queryClient.setQueryData(['resources'], context?.previousResources)
+    },
     onSettled: () => {
-      // queryClient.invalidateQueries({ queryKey: ['resources'] })
+      queryClient.invalidateQueries({ queryKey: ['resources'] })
     },
   })
 

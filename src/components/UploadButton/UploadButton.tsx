@@ -29,7 +29,10 @@ const UploadButton = () => {
       options={{
         autoMinimize: true,
         resourceType: 'image',
-        tags: [String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG)],
+        tags: [
+          String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG),
+          String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
+        ],
         folder: String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER)
       }}
       onSuccess={handleOnSuccess}
