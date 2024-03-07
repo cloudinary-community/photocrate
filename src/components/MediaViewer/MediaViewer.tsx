@@ -251,7 +251,18 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
       state: 'deleting'
     });
 
-    const tagsToUpdate = [...resource.tags, String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)]
+    const tagsToUpdate = [
+      // First remove all of the tags used for library organization 
+      ...resource.tags.filter(tag => {
+        return ![
+          String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
+          String(process.env.NEXT_PUBLIC_CLOUDINARY_CREATION_TAG),
+          String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG),
+        ].includes(tag)
+      }),
+      // Then add the tag for trash
+      String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)
+    ]
 
     const formData = new FormData();
 
@@ -271,7 +282,13 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
    */
 
   async function handleOnRestore() {
-    const tagsToUpdate = resource.tags.filter(tag => tag !== String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG))
+    const tagsToUpdate = [
+      // Strip the Trash tag
+      ...resource.tags
+        .filter(tag => tag !== String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)),
+      // Re-add the library tag to make it available again
+      String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
+    ];
 
     const formData = new FormData();
 

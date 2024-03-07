@@ -4,7 +4,6 @@ import { Upload } from 'lucide-react';
 import { CloudinaryUploadWidgetResults } from 'next-cloudinary';
 
 import { useResources } from '@/hooks/use-resources';
-import { CloudinaryResource } from '@/types/cloudinary';
 
 import CldUploadButton from "@/components/CldUploadButton";
 
@@ -14,7 +13,9 @@ const UploadButton = () => {
   });
 
   async function handleOnSuccess(results: CloudinaryUploadWidgetResults) {
-    addResources([results.info as CloudinaryResource]);
+    if ( typeof results?.info === 'object' ) {
+      addResources([results.info]);
+    }
   }
 
   function handleOnError(error: any) {

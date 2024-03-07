@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 
+import { CloudinaryResource } from '@/types/cloudinary';
+
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
@@ -7,40 +9,27 @@ cloudinary.config({
 });
 
 /**
- * getAssetsByTags
+ * getResourcebyAssetId
  */
 
-interface GetAssetsByTagsOptions {
-  excludeTags?: string | Array<string>;
+export async function getResourcebyAssetId(assetId: string) {
+  const results = await cloudinary.api.resources_by_asset_ids(assetId, {
+    tags: true
+  });
+  return results?.resources?.[0] as unknown as CloudinaryResource;
 }
 
-export async function getAssetsByTags(tags: string | Array<string>, options?: GetAssetsByTagsOptions) {
-  const tagsToSearch = Array.isArray(tags) ? tags : [tags];
-  const tagsToExclude = options?.excludeTags && (Array.isArray(options?.excludeTags) ? options.excludeTags : [options.excludeTags]);
-  
-  let tagExpression = `folder=${String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER)}`;
+/**
+ * getResourcesByTag
+ */
 
-  if ( Array.isArray(tagsToSearch) ) {
-    tagsToSearch.forEach(tag => {
-      tagExpression = `${tagExpression} AND tags="${tag}"`;
-    });
-  }
-  
-  if ( Array.isArray(tagsToExclude) ) {
-    tagsToExclude.forEach(tag => {
-      tagExpression = `${tagExpression} AND -tags="${tag}"`;
-    });
-  }
-
-  const { resources, total_count } = await cloudinary.search
-    .expression(tagExpression)
-    .with_field('tags')
-    // @todo temporary - should include pagination
-    .max_results(400)
-    .execute();
-
+export async function getResourcesByTag(tag: string) {
+  const { resources } = await cloudinary.api.resources_by_tag(tag, {
+    // @todo temporary 400 results - should include pagination
+    max_results: 400,
+    tags: true
+  });
   return {
-    resources,
-    count: total_count
+    resources: resources as unknown as Array<CloudinaryResource>
   };
 }

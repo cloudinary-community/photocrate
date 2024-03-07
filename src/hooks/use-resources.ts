@@ -27,8 +27,12 @@ export function useResources(options?: UseResources) {
   // Create a new mutation instance that we'll use to update our resources in the query state
 
   const _addResources = useMutation({
-    mutationFn: async (resources: Array<CloudinaryResource>) => resources,
+    mutationFn: async (resources: Array<CloudinaryResource>) => {
+      console.log(resources)
+      return resources
+    },
     onMutate: async (newResources) => {
+      console.log('onmutate')
       await queryClient.cancelQueries({ queryKey: ['resources'] })
 
       const previousResources = queryClient.getQueryData(['resources'])
@@ -37,11 +41,11 @@ export function useResources(options?: UseResources) {
 
       return { previousResources }
     },
-    onError: (err, newResources, context) => {
-      queryClient.setQueryData(['resources'], context?.previousResources)
-    },
+    // onError: (err, newResources, context) => {
+    //   queryClient.setQueryData(['resources'], context?.previousResources)
+    // },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['resources'] })
+      // queryClient.invalidateQueries({ queryKey: ['resources'] })
     },
   })
 
