@@ -10,7 +10,7 @@ const Nav = () => {
       <Container className="flex gap-6 items-center flex-row">
         <p className="w-40 flex-grow-0 mb-0">
           <Link href="/" className="flex gap-2 items-center font-semibold text-lg">
-            <Focus />
+            <Focus className="w-6 h-6" />
             Photobox
           </Link>
         </p>
