@@ -46,3 +46,12 @@ npm install
 npm run dev
 ```
 
+And you should now be running Photobox!
+
+## Using Photobox
+
+To start using Photobox, simply upload some images! The Upload button can be found on the top right of the library page.
+
+After uploading, the image should now show up in your gallery where you can either start adding Creations from your image or edit it by navigating to a particular image.
+
+Photobox takes advantage of both folders and tags to organize the images in your Cloudinary account. By default, all images are uploaded to a "photobox" folder and tagged with "photobox" and other tags prepended with "photobox-". This makes it easy to keep track of what images should be included in Photobox without cluttering your existing account. 
