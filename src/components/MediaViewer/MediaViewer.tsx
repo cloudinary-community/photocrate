@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Image, Ban, PencilRuler, ScissorsSquareDashedBottom, RectangleHorizontal, Square, RectangleVertical, Loader2, Copy, Star, History } from 'lucide-react';
 import { getCldImageUrl, CldImageProps } from 'next-cloudinary';
+import { useMutation } from '@tanstack/react-query';
 
 import { CloudinaryResource } from '@/types/cloudinary';
-import { addCommas, formatBytes } from '@/lib/utils';
+import { addCommas, cn, formatBytes } from '@/lib/utils';
 
 import Container from '@/components/Container';
 import CldImage from '@/components/CldImage';
@@ -27,6 +28,25 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
   const sheetFiltersRef = useRef<HTMLDivElement | null>(null);
   const sheetInfoRef = useRef<HTMLDivElement | null>(null);
+
+  const {
+    isPending: saveIsPending,
+    isSuccess: saveIsSuccess,
+    mutateAsync: save,
+    variables: { type: saveType } = {}
+  } = useMutation({
+    mutationFn: async ({ formData }: { formData: FormData, type: string }) => {
+      // Preload the URL transformation
+      await fetch(formData.get('file') as string);
+      const results = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      }).then(r => r.json());
+      return results as CloudinaryResource;
+    },
+  });
+
+  const copyIsSuccess = saveType === 'copy' && saveIsSuccess;
 
   // Sheet / Dialog UI state, basically controlling keeping them open or closed
 
@@ -161,6 +181,8 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
    */
 
   async function handleOnSave() {
+    if ( saveIsPending ) return;
+    
     const url = getCldImageUrl({
       src: resource.public_id,
       width: resource.width,
@@ -175,14 +197,10 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
     formData.append('publicId', resource.public_id);
     formData.append('file', url);
 
-    // Preload the URL transformation
-
-    await fetch(url);
-
-    await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    }).then(r => r.json())
+    await save({
+      formData,
+      type: 'update'
+    });
 
     discardChanges();
     closeMenus();
@@ -194,6 +212,8 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
    */
 
   async function handleOnSaveCopy() {
+    if ( saveIsPending ) return;
+
     const url = getCldImageUrl({
       src: resource.public_id,
       width: resource.width,
@@ -208,12 +228,12 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
     formData.append('file', url);
     formData.append('tags', `original-${resource.public_id}`);
 
-    const results = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData
-    }).then(r => r.json())
+    const results = await save({
+      formData,
+      type: 'copy'
+    });
 
-    router.push(`/resources/${results.public_id}`);
+    router.push(`/resources/${results?.asset_id}`);
   }
 
   /**
@@ -568,34 +588,48 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
           </Tabs>
           <SheetFooter className="gap-2 sm:flex-col">
             {hasTransformations && (
-              <div className="grid grid-cols-[1fr_4rem] gap-2">
+              <div className={cn(
+                'grid gap-2',
+                !saveIsPending && !copyIsSuccess && 'grid-cols-[1fr_4rem]'
+              )}>
                 <Button
                   variant="ghost"
                   className="w-full h-14 text-left justify-center items-center bg-blue-500"
                   onClick={handleOnSave}
                 >
-                  <span className="text-[1.01rem]">
-                    Save
-                  </span>
+                  {!saveIsPending && !copyIsSuccess && (
+                    <span className="text-[1.01rem]">
+                      Save
+                    </span>
+                  )}
+                  {(saveIsPending || copyIsSuccess) && (
+                    <span className="flex gap-2 items-center text-[1.01rem]">
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                      {saveType === 'copy' && 'Creating a Copy'}
+                      {saveType === 'update' && 'Saving Changes'}
+                    </span>
+                  )}
                 </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      className="w-full h-14 text-left justify-center items-center bg-blue-500"
-                    >
-                      <span className="sr-only">More Options</span>
-                      <ChevronDown className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" data-exclude-close-on-click={true}>
-                    <DropdownMenuGroup>
-                      <DropdownMenuItem onClick={handleOnSaveCopy}>
-                        <span>Save as Copy</span>
-                      </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                {!saveIsPending && !copyIsSuccess && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full h-14 text-left justify-center items-center bg-blue-500"
+                      >
+                        <span className="sr-only">More Options</span>
+                        <ChevronDown className="h-5 w-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" data-exclude-close-on-click={true}>
+                      <DropdownMenuGroup>
+                        <DropdownMenuItem onClick={handleOnSaveCopy}>
+                          <span>Save as Copy</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
             )}
             <Button

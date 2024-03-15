@@ -18,7 +18,10 @@ export async function POST(request: Request) {
   };
 
   if ( typeof publicId === 'string' ) {
-    uploadOptions.public_id = publicId;
+    // We're already including the folder in the above options, if the public ID
+    // includes the folder in it as well, we need to strip it, otherwise the
+    // upload will be attempted to be placed in folder/folder
+    uploadOptions.public_id = publicId.replace(`${process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER}/`, '');
     uploadOptions.overwrite = true;
     uploadOptions.invalidate = true;
   }

@@ -32,7 +32,6 @@ export function useResources(options?: UseResources) {
       return resources
     },
     onMutate: async (newResources) => {
-      console.log('onmutate')
       await queryClient.cancelQueries({ queryKey: ['resources'] })
 
       const previousResources = queryClient.getQueryData(['resources'])
