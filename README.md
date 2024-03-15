@@ -48,6 +48,8 @@ npm run dev
 
 And you should now be running Photobox!
 
+The Photobox library is available at /library.
+
 ## Using Photobox
 
 To start using Photobox, simply upload some images! The Upload button can be found on the top right of the library page.
