@@ -13,10 +13,6 @@ export async function POST(request: Request) {
   const tags = requestFormData.getAll('tags') as Array<string> || [];
 
   const uploadOptions: Record<string, string | Array<string> | boolean> = {
-    tags: [
-
-      ...tags,
-    ],
     folder: String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER)
   };
 
