@@ -7,8 +7,9 @@ import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Ima
 import { getCldImageUrl, CldImageProps } from 'next-cloudinary';
 import { useMutation } from '@tanstack/react-query';
 
-import { CloudinaryResource } from '@/types/cloudinary';
+import { getConfig } from '@/lib/config';
 import { addCommas, cn, formatBytes } from '@/lib/utils';
+import { CloudinaryResource } from '@/types/cloudinary';
 
 import Container from '@/components/Container';
 import CldImage from '@/components/CldImage';
@@ -24,6 +25,7 @@ interface Deletion {
 }
 
 const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
+  const { libraryTag, creationTag, trashTag, favoritesTag } = getConfig();
   const router = useRouter();
 
   const sheetFiltersRef = useRef<HTMLDivElement | null>(null);
@@ -59,8 +61,8 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
   const [filter, setFilter] = useState<string>();
   const [version, setVersion] = useState(1);
 
-  const isFavorite = resource.tags.includes(String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG));
-  const isTrash = resource.tags.includes(String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG));
+  const isFavorite = resource.tags.includes(favoritesTag);
+  const isTrash = resource.tags.includes(trashTag);
 
   type Transformations = Omit<CldImageProps, "src" | "alt">;
   const transformations: Transformations = {}
@@ -244,9 +246,9 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
     let tagsToUpdate: Array<string>;
 
     if ( isFavorite ) {
-      tagsToUpdate = resource.tags.filter(tag => tag !== String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG))
+      tagsToUpdate = resource.tags.filter(tag => tag !== favoritesTag)
     } else {
-      tagsToUpdate = [...resource.tags, String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG)];
+      tagsToUpdate = [...resource.tags, favoritesTag];
     }
 
     const formData = new FormData();
@@ -275,13 +277,13 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
       // First remove all of the tags used for library organization 
       ...resource.tags.filter(tag => {
         return ![
-          String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
-          String(process.env.NEXT_PUBLIC_CLOUDINARY_CREATION_TAG),
-          String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG),
+          libraryTag,
+          creationTag,
+          favoritesTag,
         ].includes(tag)
       }),
       // Then add the tag for trash
-      String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)
+      trashTag
     ]
 
     const formData = new FormData();
@@ -305,9 +307,9 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
     const tagsToUpdate = [
       // Strip the Trash tag
       ...resource.tags
-        .filter(tag => tag !== String(process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG)),
+        .filter(tag => tag !== trashTag),
       // Re-add the library tag to make it available again
-      String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
+      libraryTag,
     ];
 
     const formData = new FormData();

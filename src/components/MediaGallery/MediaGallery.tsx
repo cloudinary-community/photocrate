@@ -6,6 +6,7 @@ import { Plus, X, Save, LayoutPanelLeft, Loader2, SquareStack, Droplet, Sparkles
 
 import { useResources } from "@/hooks/use-resources";
 import { CloudinaryResource } from '@/types/cloudinary';
+import { getConfig } from '@/lib/config';
 import { getAnimation, getCollage } from "@/lib/creations";
 import { cn } from '@/lib/utils';
 
@@ -29,6 +30,7 @@ interface Creation {
 }
 
 const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation = false }: MediaGalleryProps) => {
+  const { creationTag, favoritesTag } = getConfig();
   const { resources, addResources } = useResources({ initialResources, tag });
 
   const [selected, setSelected] = useState<Array<string>>([]);
@@ -125,7 +127,7 @@ const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation
     const formData = new FormData();
 
     formData.append('file', creation.url);
-    formData.append('tags', String(process.env.NEXT_PUBLIC_CLOUDINARY_CREATION_TAG));
+    formData.append('tags', creationTag);
 
     // Preload the URL transformation
 
@@ -292,14 +294,14 @@ const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation
                       </span>
 
                       <Link className="block cursor-pointer" href={`/resources/${resource.asset_id}`}>
-                        {resource.tags?.includes(String(process.env.NEXT_PUBLIC_CLOUDINARY_CREATION_TAG)) && (
+                        {resource.tags?.includes(creationTag) && (
                           <span className="group-hover:opacity-0 transition-opacity absolute z-10 top-3 right-3 w-6 h-6 rounded-full">
                             <Sparkles className="text-white w-full h-full" />
                             <span className="sr-only">Creation</span>
                           </span>
                         )}
 
-                        {resource.tags?.includes(String(process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG)) && (
+                        {resource.tags?.includes(favoritesTag) && (
                           <Star className="group-hover:opacity-0 transition-opacity absolute z-10 bottom-3 left-3 w-6 h-6 text-white" />
                         )}
 

@@ -4,10 +4,13 @@ import { Upload } from 'lucide-react';
 import { CloudinaryUploadWidgetResults } from 'next-cloudinary';
 
 import { useResources } from '@/hooks/use-resources';
+import { getConfig } from '@/lib/config';
 
 import CldUploadButton from "@/components/CldUploadButton";
 
 const UploadButton = () => {
+  const { assetsFolder, assetsTag, libraryTag } = getConfig();
+
   const { addResources } = useResources({
     disableFetch: true
   });
@@ -30,10 +33,10 @@ const UploadButton = () => {
         autoMinimize: true,
         resourceType: 'image',
         tags: [
-          String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG),
-          String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
+          assetsTag,
+          libraryTag,
         ],
-        folder: String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER)
+        folder: assetsFolder
       }}
       onSuccess={handleOnSuccess}
       onError={handleOnError}

@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 
+import { getConfig } from '@/lib/config';
+
 cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
@@ -7,13 +9,15 @@ cloudinary.config({
 })
 
 export async function POST(request: Request) {
+  const { assetsFolder, assetsTag, libraryTag } = getConfig();
+
   const requestFormData = await request.formData()
   const file = requestFormData.get('file') as string;
   const publicId = requestFormData.get('publicId') as string;
   const tags = requestFormData.getAll('tags') as Array<string> || [];
 
   const uploadOptions: Record<string, string | Array<string> | boolean> = {
-    folder: String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER)
+    folder: assetsFolder
   };
 
   if ( typeof publicId === 'string' ) {
@@ -21,7 +25,7 @@ export async function POST(request: Request) {
     // includes the folder in it as well, we need to strip it, otherwise the
     // upload will be attempted to be placed in folder/folder
 
-    uploadOptions.public_id = publicId.replace(`${process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER}/`, '');
+    uploadOptions.public_id = publicId.replace(`${assetsFolder}/`, '');
     uploadOptions.overwrite = true;
     uploadOptions.invalidate = true;
 
@@ -36,8 +40,8 @@ export async function POST(request: Request) {
     // tags on an image, which would presumably have the standard tags already applied
 
     uploadOptions.tags = [
-      String(process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG),
-      String(process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG),
+      assetsTag,
+      libraryTag,
       ...tags,
     ]
   }
