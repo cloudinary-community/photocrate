@@ -1,5 +1,5 @@
-import { PhotoboxConfig } from '@/types/config';
+import { ThemeConfig } from '@/types/config';
 
-const config: PhotoboxConfig = {};
+const config: ThemeConfig = {};
 
 export default config;
