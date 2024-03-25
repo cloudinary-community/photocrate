@@ -7,10 +7,16 @@ cloudinary.config({
 })
 
 export async function POST(request: Request) {
+  if ( process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' ) {
+    return new Response('Unauthorized', {
+      status: 401
+    })
+  }
+
   const body = await request.json();
   const { paramsToSign } = body;
 
   const signature = cloudinary.utils.api_sign_request(paramsToSign, String(process.env.CLOUDINARY_API_SECRET));
-  
+
   return Response.json({ signature });
 }

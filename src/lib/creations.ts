@@ -178,7 +178,8 @@ export function getAnimation(publicIds: Array<CloudinaryResource["public_id"]>) 
 
   return getCldImageUrl({
     src: publicIds[0],
-    width: 600,
+    width: 1200,
+    height: 1200,
     version: Date.now(),
     format: 'gif',
     ...template(publicIds)

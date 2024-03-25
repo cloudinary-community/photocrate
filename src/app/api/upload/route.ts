@@ -9,6 +9,12 @@ cloudinary.config({
 })
 
 export async function POST(request: Request) {
+  if ( process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' ) {
+    return new Response('Unauthorized', {
+      status: 401
+    })
+  }
+
   const { assetsFolder, assetsTag, libraryTag } = getConfig();
 
   const requestFormData = await request.formData()

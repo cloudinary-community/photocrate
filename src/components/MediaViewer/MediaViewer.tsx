@@ -1,7 +1,6 @@
 'use client';
 
 import {  useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Image, Ban, PencilRuler, ScissorsSquareDashedBottom, RectangleHorizontal, Square, RectangleVertical, Loader2, Copy, Star, History } from 'lucide-react';
 import { getCldImageUrl, CldImageProps } from 'next-cloudinary';
@@ -18,6 +17,7 @@ import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 
 interface Deletion {
@@ -184,7 +184,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
   async function handleOnSave() {
     if ( saveIsPending ) return;
-    
+
     const url = getCldImageUrl({
       src: resource.public_id,
       width: resource.width,
@@ -274,7 +274,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
     });
 
     const tagsToUpdate = [
-      // First remove all of the tags used for library organization 
+      // First remove all of the tags used for library organization
       ...resource.tags.filter(tag => {
         return ![
           libraryTag,
@@ -592,27 +592,31 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
             {hasTransformations && (
               <div className={cn(
                 'grid gap-2',
-                !saveIsPending && !copyIsSuccess && 'grid-cols-[1fr_4rem]'
+                process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && !saveIsPending && !copyIsSuccess && 'grid-cols-[1fr_4rem]'
               )}>
-                <Button
-                  variant="ghost"
-                  className="w-full h-14 text-left justify-center items-center bg-blue-500"
-                  onClick={handleOnSave}
-                >
-                  {!saveIsPending && !copyIsSuccess && (
-                    <span className="text-[1.01rem]">
-                      Save
-                    </span>
-                  )}
-                  {(saveIsPending || copyIsSuccess) && (
-                    <span className="flex gap-2 items-center text-[1.01rem]">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      {saveType === 'copy' && 'Creating a Copy'}
-                      {saveType === 'update' && 'Saving Changes'}
-                    </span>
-                  )}
-                </Button>
-                {!saveIsPending && !copyIsSuccess && (
+
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+                  <Button
+                    variant="ghost"
+                    className="w-full h-14 text-left justify-center items-center bg-blue-500"
+                    onClick={handleOnSave}
+                  >
+                    {!saveIsPending && !copyIsSuccess && (
+                      <span className="text-[1.01rem]">
+                        Save
+                      </span>
+                    )}
+                    {(saveIsPending || copyIsSuccess) && (
+                      <span className="flex gap-2 items-center text-[1.01rem]">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        {saveType === 'copy' && 'Creating a Copy'}
+                        {saveType === 'update' && 'Saving Changes'}
+                      </span>
+                    )}
+                  </Button>
+                )}
+
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && !saveIsPending && !copyIsSuccess && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
@@ -631,6 +635,21 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       </DropdownMenuGroup>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                )}
+
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+                  <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+                      <TooltipTrigger className={`${buttonVariants({ variant: "ghost" })} w-full h-14 justify-center items-center bg-blue-500 hover:bg-blue-500 opacity-70 text-blue-200 hover:text-blue-200`} aria-label="Saving is disabled">
+                        <span className="text-[1.01rem]">
+                          Save
+                        </span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Saving is Disabled</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 )}
               </div>
             )}
@@ -741,20 +760,53 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
             </Button>
           </li>
           <li>
-            <Button variant="ghost" className="text-white" onClick={handleOnFavoriteToggle}>
-              <Star
-                className="h-6 w-6"
-                {...(isFavorite && { fill: 'white' })}
-              />
-              <span className="sr-only">Favorite</span>
-            </Button>
+            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+              <Button variant="ghost" className="text-white" onClick={handleOnFavoriteToggle}>
+                <Star
+                  className="h-6 w-6"
+                  {...(isFavorite && { fill: 'white' })}
+                />
+                <span className="sr-only">Favorite</span>
+              </Button>
+            )}
+            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger className={`${buttonVariants({ variant: "ghost" })} text-zinc-500 hover:text-zinc-500 bg-transparent hover:bg-transparent`} aria-label="Favoriting is disabled">
+                    <Star
+                      className="h-6 w-6"
+                      {...(isFavorite && { fill: 'white' })}
+                    />
+                    <span className="sr-only">Favorite</span>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Favoriting is Disabled</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </li>
           { !isTrash && (
             <li>
-              <Button variant="ghost" className="text-white" onClick={() => setDeletion({ state: 'confirm' })}>
-                <Trash2 className="h-6 w-6" />
-                <span className="sr-only">Delete</span>
-              </Button>
+              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+                <Button variant="ghost" className="text-white" onClick={() => setDeletion({ state: 'confirm' })}>
+                  <Trash2 className="h-6 w-6" />
+                  <span className="sr-only">Delete</span>
+                </Button>
+              )}
+              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger className={`${buttonVariants({ variant: "ghost" })} text-zinc-500 hover:text-zinc-500 bg-transparent hover:bg-transparent`} aria-label="Deleting is disabled">
+                      <Trash2 className="h-6 w-6" />
+                      <span className="sr-only">Delete</span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Deleting is Disabled</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
             </li>
           )}
           { isTrash && (

@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { Upload } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 import { getConfig } from '@/lib/config';
 
@@ -17,7 +19,21 @@ const Nav = () => {
         </p>
         <ul className="flex flex-grow justify-end gap-6 m-0">
           <li>
-            <UploadButton />
+            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+              <UploadButton />
+            )}
+            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+              <TooltipProvider delayDuration={200}>
+                <Tooltip>
+                  <TooltipTrigger className="flex items-center text-zinc-400" aria-label="Uploading is disabled">
+                    <Upload className="mr-2 h-4 w-4" /> Upload
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Uploading is Disabled</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
           </li>
         </ul>
       </Container>

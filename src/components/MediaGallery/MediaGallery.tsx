@@ -12,15 +12,15 @@ import { cn } from '@/lib/utils';
 
 import CldImage from '@/components/CldImage';
 import Container from '@/components/Container';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface MediaGalleryProps {
   resources?: Array<CloudinaryResource>;
   tag?: string;
-  disableAssetNavigation?: boolean;
 }
 
 interface Creation {
@@ -29,7 +29,7 @@ interface Creation {
   url?: string;
 }
 
-const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation = false }: MediaGalleryProps) => {
+const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) => {
   const { creationTag, favoritesTag } = getConfig();
   const { resources, addResources } = useResources({ initialResources, tag });
 
@@ -173,15 +173,31 @@ const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation
                 )}
               </div>
               <DialogFooter className="justify-end sm:justify-end">
-                <Button onClick={handleOnSaveCreation} disabled={creation?.state === 'saving'}>
-                  {creation?.state === 'saving' && (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  )}
-                  {creation?.state !== 'saving' && (
-                    <Save className="h-4 w-4 mr-2" />
-                  )}
-                  Save to Library
-                </Button>
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+                  <Button onClick={handleOnSaveCreation} disabled={creation?.state === 'saving'}>
+                    {creation?.state === 'saving' && (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    )}
+                    {creation?.state !== 'saving' && (
+                      <Save className="h-4 w-4 mr-2" />
+                    )}
+                    Save to Library
+                  </Button>
+                )}
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+                  <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+                      <TooltipTrigger className={`${buttonVariants()} text-blue-200 hover:text-blue-200 opacity-70`} aria-label="Saving is disabled">
+                        <Save className="h-4 w-4 mr-2" />
+                        Save to Library
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Saving is Disabled</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+
               </DialogFooter>
             </>
           )}

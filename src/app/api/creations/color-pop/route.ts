@@ -9,6 +9,12 @@ cloudinary.config({
 })
 
 export async function POST(request: Request) {
+  if ( process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' ) {
+    return new Response('Unauthorized', {
+      status: 401
+    })
+  }
+
   const { publicId } = await request.json()
 
   const backgroundRemovedUrl = getCldImageUrl({
@@ -20,7 +26,7 @@ export async function POST(request: Request) {
 
   async function checkStatus(url: string) {
     const resource = await fetch(url);
-  
+
     if (!resource.ok) {
       await new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -46,7 +52,9 @@ export async function POST(request: Request) {
     version: Date.now(),
     grayscale: true,
     overlays: [{
-      publicId: backgroundRemovedResource.public_id
+      publicId: backgroundRemovedResource.public_id,
+      width: '1.0',
+      flags: ['relative']
     }]
   });
 
