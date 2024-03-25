@@ -1,3 +1,5 @@
+"use client";
+
 import { CldImage as CldImageDefault, CldImageProps } from 'next-cloudinary';
 import { PlaceholderValue } from 'next/dist/shared/lib/get-img-props';
 

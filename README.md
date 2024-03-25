@@ -22,7 +22,13 @@ Technology used to build Photobox includes:
 
 ## Getting Started
 
-1. Fork or clone Photobox to your local environment.
+1. Create a new local project
+
+```
+npx create-next-app@latest https://github.com/cloudinary-community/photobox photobox
+```
+
+You can also fork or clone the project manually!
 
 2. Create a .env.local file or configure your environment variables to include:
 
