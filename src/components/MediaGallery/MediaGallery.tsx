@@ -310,8 +310,7 @@ const MediaGallery = ({ resources: initialResources, tag, disableAssetNavigation
                           height={resource.height}
                           src={resource.public_id}
                           alt={`Image ${resource.public_id}`}
-                          format="auto"
-                          sizes="(min-width: 768px) 33w, (min-width: 768px) 25w, (min-width: 1280px) 20w, 50w"
+                          sizes="(min-width: 768px) calc(33.33vw - 4rem), (min-width: 1024px) calc(25vw - 3rem), (min-width: 1280px) calc(20vw - 2.4rem), 50vw"
                         />
                       </Link>
                     </div>
