@@ -20,22 +20,22 @@ export default function RootLayout({
               {
                 icon: <Image className="w-5 h-5" />,
                 label: 'Photos',
-                path: '/library'
+                path: '/'
               },
               {
                 icon: <Sparkles className="w-5 h-5" />,
                 label: 'Creations',
-                path: '/library/creations'
+                path: '/creations'
               },
               {
                 icon: <Star className="w-5 h-5" />,
                 label: 'Favorites',
-                path: '/library/favorites'
+                path: '/favorites'
               },
               {
                 icon: <Trash className="w-5 h-5" />,
                 label: 'Trash',
-                path: '/library/trash'
+                path: '/trash'
               },
             ]}
           />

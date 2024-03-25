@@ -296,7 +296,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
       body: formData
     });
 
-    router.push('/library');
+    router.push('/');
   }
 
   /**
