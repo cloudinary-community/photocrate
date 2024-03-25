@@ -7,7 +7,7 @@ export default function HomeLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="h-full grid grid-rows-[1fr_auto_1fr]">
+    <div className="h-full grid grid-rows-[auto_1fr_auto]">
       <Nav />
       { children }
       <Footer />

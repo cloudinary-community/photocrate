@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import Container from "@/components/Container"
 import CldImage from "@/components/CldImage"
 import CopyButton from "@/components/CopyButton"
@@ -15,7 +17,9 @@ export default async function Home() {
             Text
           </p>
           <p className="mb-6">
-            <Button>Get Started</Button>
+            <Button>
+              <Link href="/getting-started">Get Started</Link>
+            </Button>
           </p>
         </div>
         <div>
