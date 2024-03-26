@@ -58,8 +58,59 @@ export default async function Home() {
           </a>
         </p>
       </Container>
+
+      <Container className="grid grid-cols-2 gap-14 my-36">
+        <div className="prose flex flex-col justify-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-8">
+            Give New Life to Your Memories
+          </h2>
+          <p className="text-xl leading-8">
+            Use <span className="font-semibold">Photobox Creations</span> to create
+            Collages, Animations, and more built on top of Cloudinary transformations
+            to give a new experience to your images.
+          </p>
+        </div>
+        <div>
+          <CldImage
+            className="shadow-lg rounded-lg"
+            src="assets/photobox-collage-explore_kapjnj"
+            width={1200}
+            height={1200}
+            sizes="100vw"
+            alt="Collage with Thailand, Arizona, and Rio de Janiero"
+          />
+        </div>
+      </Container>
+
+      <Container className="grid grid-cols-2 gap-14 my-36">
+        <div>
+          <CldImage
+            className="shadow-lg rounded-lg"
+            src="assets/photobox-collage-explore_kapjnj"
+            width={1200}
+            height={1200}
+            sizes="100vw"
+            alt="Collage with Thailand, Arizona, and Rio de Janiero"
+          />
+        </div>
+        <div className="prose flex flex-col justify-center">
+          <h2 className="text-2xl md:text-3xl font-bold mb-8">
+            Your Photos, Your Library
+          </h2>
+          <p className="text-xl leading-8">
+            Gain control over how your images are stored using Cloudinary&apos;s
+            as the host for all of your images.
+          </p>
+        </div>
+      </Container>
+
       <Container className="max-w-2xl text-center my-12">
-        
+        <h2 className="text-2xl md:text-3xl font-bold mb-8">
+          Powered by the Tools You Love
+        </h2>
+        <ul>
+          <li>Logos</li>
+        </ul>
       </Container>
     </div>
   )
