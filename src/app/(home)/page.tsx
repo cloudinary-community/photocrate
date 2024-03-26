@@ -16,9 +16,12 @@ export default async function Home() {
           <p className="text-lg mb-6">
             Image library and interactive editor built with Next.js
           </p>
-          <p className="mb-6">
+          <p className="flex gap-4 mb-6">
             <Button>
               <Link href="/getting-started">Get Started</Link>
+            </Button>
+            <Button variant="outline">
+              <a href="https://github.com/cloudinary-community/photobox">View on GitHub</a>
             </Button>
           </p>
         </div>
@@ -34,7 +37,7 @@ export default async function Home() {
         </div>
       </Container>
       <Container className="max-w-2xl text-center my-12">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6">
+        <h2 className="text-2xl md:text-3xl font-bold mb-8">
           Create a new Photobox
         </h2>
         <div className="grid sm:grid-cols-[auto_1fr] gap-2 max-w-lg mx-auto mb-6">
@@ -50,10 +53,13 @@ export default async function Home() {
           Or deploy your new library!
         </p>
         <p>
-          <a className="inline-block" href="https://vercel.com/new/clone?demo-description=Photo%20library%20and%20interactive%20editor%20built%20with%20Next.js&demo-image=https%3A%2F%2Fres.cloudinary.com%2Fphotoboxdev%2Fimage%2Fupload%2Ff_auto%2Fq_auto%2Fassets%2Fvercel-deploy-photobox-media-library_yclazk&demo-title=Photobox&demo-url=https%3A%2F%2Fdemo.photobox.dev%2F&project-name=Photobox&repository-name=photobox&repository-url=https%3A%2F%2Fgithub.com%2Fcloudinary-community%2Fphotobox">
+          <a className="inline-block" href="https://vercel.com/new/clone?demo-description=Photo%20library%20and%20interactive%20editor%20built%20with%20Next.js&demo-image=https%3A%2F%2Fres.cloudinary.com%2Fphotoboxdev%2Fimage%2Fupload%2Ff_auto%2Fq_auto%2Fassets%2Fvercel-deploy-photobox-media-library_yclazk&demo-title=Photobox&demo-url=https%3A%2F%2Fdemo.photobox.dev%2F&project-name=Photobox&repository-name=photobox&repository-url=https%3A%2F%2Fgithub.com%2Fcloudinary-community%2Fphotobox&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,NEXT_PUBLIC_CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET&envDescription=Cloudinary%20credentials%20needed%20to%20connect%20Photobox%20to%20your%20account.&envLink=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D1SIp9VL5TMo">
             <img width="103" height="32" src="https://vercel.com/button" alt="Deploy to Vercel" />
           </a>
         </p>
+      </Container>
+      <Container className="max-w-2xl text-center my-12">
+        
       </Container>
     </div>
   )
