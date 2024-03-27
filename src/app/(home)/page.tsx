@@ -9,40 +9,42 @@ import { Button } from "@/components/ui/button"
 export default async function Home() {
   return (
     <div>
-      <Container className="max-w-6xl grid text-center md:text-left md:grid-cols-[3fr_4fr] gap-4 md:gap-10 md:py-12 mt-12 mb-16 overflow-hidden">
-        <div className="flex flex-col justify-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-5 flex gap-4 items-center">
-            <Focus className="w-14 h-14" /> Photobox
-          </h1>
-          <p className="text-lg mb-6">
-            Image library and interactive editor built with Next.js
-          </p>
-          <p className="flex gap-4 flex-wrap mb-6 justify-center md:justify-start">
-            <Button size="lg">
-              <Link href="/getting-started">Get Started</Link>
-            </Button>
-            <Button variant="outline" size="lg">
-              <a href="https://github.com/cloudinary-community/photobox">View on GitHub</a>
-            </Button>
-          </p>
-          <p className="text-sm">
-            Or <a className="text-blue-600 underline" href="https://demo.photobox.dev">check out the demo</a>.
-          </p>
-        </div>
-        <div className="scale-125 relative -right-20">
-          <CldImage
-            className="shadow-lg rounded-lg"
-            width="1723"
-            height="978"
-            src="assets/photobox-media-library_qsqtf0"
-            alt="Photobox media library"
-            sizes="50w"
-            priority
-          />
-        </div>
+      <Container className="max-w-none mt-12 mb-16 overflow-x-clip px-0">
+        <Container className="max-w-6xl grid text-center lg:text-left lg:grid-cols-[3fr_4fr] gap-4 md:gap-10 py-0 md:py-12 lg:py-20 xl:py-28">
+          <div className="flex flex-col justify-center">
+            <h1 className="text-4xl sm:text-5xl font-bold mb-5 flex gap-4 items-center justify-center lg:justify-start">
+              <Focus className="w-14 h-14" /> Photobox
+            </h1>
+            <p className="text-lg mb-6">
+              Image library and interactive editor built with Next.js
+            </p>
+            <p className="flex gap-4 flex-wrap mb-6 justify-center lg:justify-start">
+              <Button size="lg">
+                <Link href="/getting-started">Get Started</Link>
+              </Button>
+              <Button variant="outline" size="lg">
+                <a href="https://github.com/cloudinary-community/photobox">View on GitHub</a>
+              </Button>
+            </p>
+            <p className="text-sm">
+              Or <a className="text-blue-600 underline" href="https://demo.photobox.dev">check out the demo</a>.
+            </p>
+          </div>
+          <div className="relative lg:scale-125 lg:-right-20">
+            <CldImage
+              className="shadow-lg rounded-lg"
+              width="1723"
+              height="978"
+              src="assets/photobox-media-library_qsqtf0"
+              alt="Photobox media library"
+              sizes="50w"
+              priority
+            />
+          </div>
+        </Container>
       </Container>
 
-      <Container className="relative max-w-none text-center my-12 bg-[#FABD36] py-16">
+      <Container className="relative max-w-none text-center my-12 bg-[#FABD36] px-0 py-16">
         <Container className="max-w-2xl">
           <h2 className="text-2xl md:text-4xl font-bold mb-8">
             Create a new Photobox
@@ -74,7 +76,7 @@ export default async function Home() {
         </Container>
       </Container>
 
-      <Container className="max-w-none my-24 md:my-36 overflow-hidden">
+      <Container className="max-w-none my-24 md:my-36 overflow-x-clip px-0">
         <Container
           className="
             relative grid text-center md:text-left md:grid-cols-2 gap-10 md:gap-14
@@ -104,12 +106,12 @@ export default async function Home() {
         </Container>
       </Container>
 
-      <Container className="max-w-none my-24 md:my-36 overflow-hidden">
+      <Container className="max-w-none my-24 md:my-36 overflow-x-clip px-0">
         <Container
-        className="
-          grid text-center md:text-left md:grid-cols-2 gap-10 md:gap-14
-          relative after:content-['_'] after:block after:h-[calc(100%_+_3rem)] md:after:h-[calc(100%_-_2rem)] lg:after:h-[calc(100%_-_8rem)] after:w-[calc(100%_-_1rem)] md:after:w-screen after:absolute after:-top-4 md:after:top-0 after:right-[.5rem] md:after:-right-10 after:bottom-0 after:z-0 after:my-auto after:bg-[#FE5F2E] after:rounded-2xl
-        "
+          className="
+            grid text-center md:text-left md:grid-cols-2 gap-10 md:gap-14
+            relative after:content-['_'] after:block after:h-[calc(100%_+_3rem)] md:after:h-[calc(100%_-_2rem)] lg:after:h-[calc(100%_-_8rem)] after:w-[calc(100%_-_1rem)] md:after:w-screen after:absolute after:-top-4 md:after:top-0 after:right-[.5rem] md:after:-right-10 after:bottom-0 after:z-0 after:my-auto after:bg-[#FE5F2E] after:rounded-2xl
+          "
         >
           <div className="relative z-10 order-2 md:order-1">
             <CldImage
