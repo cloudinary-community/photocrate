@@ -10,7 +10,7 @@ export default function HomeLayout({
     <div className="h-full grid grid-rows-[auto_1fr_auto]">
       <Nav />
       { children }
-      <Footer />
+      <Footer className="mt-16" />
     </div>
   )
 }
