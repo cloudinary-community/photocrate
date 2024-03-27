@@ -19,10 +19,10 @@ export default async function Home() {
               Image library and interactive editor built with Next.js
             </p>
             <p className="flex gap-4 flex-wrap mb-6 justify-center lg:justify-start">
-              <Button size="lg">
+              <Button size="lg" asChild>
                 <Link href="/getting-started">Get Started</Link>
               </Button>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" asChild>
                 <a href="https://github.com/cloudinary-community/photobox">View on GitHub</a>
               </Button>
             </p>
@@ -693,10 +693,10 @@ export default async function Home() {
           Create Your Photobox
         </h2>
         <p className="flex gap-4 flex-wrap justify-center">
-          <Button variant="secondary" size="lg">
+          <Button variant="secondary" size="lg" asChild>
             <Link href="/getting-started">Get Started</Link>
           </Button>
-          <Button variant="outline" size="lg" className="text-zinc-800">
+          <Button variant="outline" size="lg" className="text-zinc-800" asChild>
             <a href="https://github.com/cloudinary-community/photobox">View on GitHub</a>
           </Button>
         </p>
