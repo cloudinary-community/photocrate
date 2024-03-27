@@ -61,7 +61,14 @@ export default async function Home() {
           </p>
           <p>
             <a className="inline-block" href="https://vercel.com/new/clone?demo-description=Photo%20library%20and%20interactive%20editor%20built%20with%20Next.js&demo-image=https%3A%2F%2Fres.cloudinary.com%2Fphotoboxdev%2Fimage%2Fupload%2Ff_auto%2Fq_auto%2Fassets%2Fvercel-deploy-photobox-media-library_yclazk&demo-title=Photobox&demo-url=https%3A%2F%2Fdemo.photobox.dev%2F&project-name=Photobox&repository-name=photobox&repository-url=https%3A%2F%2Fgithub.com%2Fcloudinary-community%2Fphotobox&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,NEXT_PUBLIC_CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET&envDescription=Cloudinary%20credentials%20needed%20to%20connect%20Photobox%20to%20your%20account.&envLink=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D1SIp9VL5TMo">
-              <img width="103" height="32" src="https://vercel.com/button" alt="Deploy to Vercel" />
+              <CldImage
+                deliveryType="fetch"
+                format="svg"
+                width="103"
+                height="32"
+                src="https://vercel.com/button"
+                alt="Deploy to Vercel"
+              />
             </a>
           </p>
         </Container>

@@ -17,11 +17,11 @@ export default async function Home() {
           
           <p>
             Either clone the project locally or deploy the project, then configure your
-            environment variables to connect your Cloudinary account, and you're all set!
+            environment variables to connect your Cloudinary account, and you&apos;re all set!
           </p>
           
           <p>
-            Let's take it step by step...
+            Let&apos;s take it step by step...
           </p>
 
           <p className="border border-[#FE5F2E] bg-[#FBF1E6] rounded px-4 py-3">
@@ -56,13 +56,21 @@ export default async function Home() {
             Note: You can alternatively clone the project manually <a className="font-normal" href="https://github.com/cloudinary-community/photobox">directly from GitHub</a>.
           </p>
 
-          <h3 className="text-lg">Or if you're deploying your project...</h3>
+          <h3 className="text-lg">Or if you&apos;re deploying your project...</h3>
 
           <p>Deploy to Vercel:</p>
           
           <p>
             <a className="inline-block" href="https://vercel.com/new/clone?demo-description=Photo%20library%20and%20interactive%20editor%20built%20with%20Next.js&demo-image=https%3A%2F%2Fres.cloudinary.com%2Fphotoboxdev%2Fimage%2Fupload%2Ff_auto%2Fq_auto%2Fassets%2Fvercel-deploy-photobox-media-library_yclazk&demo-title=Photobox&demo-url=https%3A%2F%2Fdemo.photobox.dev%2F&project-name=Photobox&repository-name=photobox&repository-url=https%3A%2F%2Fgithub.com%2Fcloudinary-community%2Fphotobox&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,NEXT_PUBLIC_CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET&envDescription=Cloudinary%20credentials%20needed%20to%20connect%20Photobox%20to%20your%20account.&envLink=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D1SIp9VL5TMo">
-              <img className="m-0" width="103" height="32" src="https://vercel.com/button" alt="Deploy to Vercel" />
+              <CldImage
+                className="m-0"
+                deliveryType="fetch"
+                format="svg"
+                width="103"
+                height="32"
+                src="https://vercel.com/button"
+                alt="Deploy to Vercel"
+              />
             </a>
           </p>
 
@@ -128,7 +136,7 @@ CLOUDINARY_API_SECRET="<Your API Secret>"
           </p>
 
           <p>
-            You&apos;ll notice at first no photos will appear, but that's expect! In order to
+            You&apos;ll notice at first no photos will appear, but that&apos;s expect! In order to
             use Photobox, you need to first upload some photos, so use the Upload button,
             drag-and-drop or select the images you want to add to your Photobox, then
             sit back and watch them upload!
