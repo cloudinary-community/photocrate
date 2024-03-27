@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Photobox',
-  description: 'Open Source image library and interactive editor built with Next.js',
+  description: 'Open Source image library and interactive editor built with Next.js and Cloudinary.',
   openGraph: {
     images: [
       {
