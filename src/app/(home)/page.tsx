@@ -693,10 +693,10 @@ export default async function Home() {
           Create Your Photobox
         </h2>
         <p className="flex gap-4 flex-wrap justify-center">
-          <Button variant="secondary" size="lg" asChild>
+          <Button size="lg" asChild className="bg-blue-50 hover:bg-white text-primary">
             <Link href="/getting-started">Get Started</Link>
           </Button>
-          <Button variant="outline" size="lg" className="text-zinc-800" asChild>
+          <Button variant="outline" size="lg" className="bg-transparent hover:bg-[#5895fa] text-blue-50 hover:text-white" asChild>
             <a href="https://github.com/cloudinary-community/photobox">View on GitHub</a>
           </Button>
         </p>
