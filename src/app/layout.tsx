@@ -1,15 +1,18 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-
-import Providers from '@/app/providers';
 import { getCldOgImageUrl } from 'next-cloudinary';
 
+import Providers from '@/app/providers';
+
+import { getConfig } from '@/lib/config';
+
 const inter = Inter({ subsets: ['latin'] })
+const { title } = getConfig();
 
 export const metadata: Metadata = {
-  title: 'Photobox',
-  description: 'Open Source image library and interactive editor built with Next.js and Cloudinary.',
+  title,
+  description: 'Learn more at photobox.dev!',
   openGraph: {
     images: [
       {
