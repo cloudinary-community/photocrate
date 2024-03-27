@@ -49,11 +49,11 @@ export default async function Home() {
           </h2>
           <div className="grid sm:grid-cols-[auto_1fr] gap-2 max-w-lg mx-auto mb-6">
             <code className="flex items-center overflow-x-scroll h-12 text-sm bg-white border border-[#FFD9A3] py-3 px-4 rounded">
-              <pre>{`npx create-next-app@latest https://github.com/cloudinary-community/photobox photobox`}</pre>
+              <pre>{`npx create-next-app@latest -e https://github.com/cloudinary-community/photobox photobox`}</pre>
             </code>
             <CopyButton
               className="inline-flex gap-2 h-12"
-              text="npx create-next-app@latest https://github.com/cloudinary-community/photobox photobox"
+              text="npx create-next-app@latest -e https://github.com/cloudinary-community/photobox photobox"
             />
           </div>
           <p className="text-sm mb-6">
