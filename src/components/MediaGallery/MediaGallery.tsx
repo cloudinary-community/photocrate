@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Plus, X, Save, LayoutPanelLeft, Loader2, SquareStack, Droplet, Sparkles, Star } from 'lucide-react';
+import { Plus, X, Save, LayoutPanelLeft, Loader2, SquareStack, Droplet, Sparkles, Star, Upload } from 'lucide-react';
 
 import { useResources } from "@/hooks/use-resources";
 import { CloudinaryResource } from '@/types/cloudinary';
@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 
 import CldImage from '@/components/CldImage';
 import Container from '@/components/Container';
+import UploadButton from '@/components/UploadButton';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -263,8 +264,9 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
       {/** Gallery */}
 
       <Container>
-        <form>
-          {Array.isArray(resources) && (
+
+        {Array.isArray(resources) && resources.length > 0 && (
+          <form>
             <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mb-12">
               {resources.map((resource) => {
                 const isChecked = selected.includes(resource.public_id);
@@ -334,8 +336,22 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                 )
               })}
             </ul>
-          )}
-        </form>
+          </form>
+        )}
+        {(!Array.isArray(resources) || resources.length === 0) && (
+          <div className="w-full text-center pt-12">
+            <p className="text-xl mb-4">Your Photobox is empty!</p>
+            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+              <p>
+                <UploadButton>
+                  <span className={`${buttonVariants()} flex items-center`}>
+                    <Upload className="mr-2 h-4 w-4" /> Upload a Photo
+                  </span>
+                </UploadButton>
+              </p>
+            )}
+          </div>
+        )}
       </Container>
     </>
   )

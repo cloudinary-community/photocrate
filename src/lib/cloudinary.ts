@@ -24,12 +24,18 @@ export async function getResourcebyAssetId(assetId: string) {
  */
 
 export async function getResourcesByTag(tag: string) {
-  const { resources } = await cloudinary.api.resources_by_tag(tag, {
-    // @todo temporary 400 results - should include pagination
-    max_results: 400,
-    tags: true
-  });
-  return {
-    resources: resources as unknown as Array<CloudinaryResource>
-  };
+  try {
+    const { resources } = await cloudinary.api.resources_by_tag(tag, {
+      // @todo temporary 400 results - should include pagination
+      max_results: 400,
+      tags: true
+    });
+    return {
+      resources: resources as unknown as Array<CloudinaryResource>
+    };
+  } catch(e) {
+    return {
+      resources: []
+    }
+  }
 }

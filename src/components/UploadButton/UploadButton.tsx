@@ -8,7 +8,11 @@ import { getConfig } from '@/lib/config';
 
 import CldUploadButton from "@/components/CldUploadButton";
 
-const UploadButton = () => {
+interface UploadButtonProps {
+  children?: JSX.Element
+}
+
+const UploadButton = ({ children }: UploadButtonProps) => {
   const { assetsFolder, assetsTag, libraryTag } = getConfig();
 
   const { addResources } = useResources({
@@ -41,9 +45,11 @@ const UploadButton = () => {
       onSuccess={handleOnSuccess}
       onError={handleOnError}
     >
-      <span className="flex items-center">
-        <Upload className="mr-2 h-4 w-4" /> Upload
-      </span>
+      {children || (
+        <span className="flex items-center">
+          <Upload className="mr-2 h-4 w-4" /> Upload
+        </span>
+      )}
     </CldUploadButton>
   )
 }

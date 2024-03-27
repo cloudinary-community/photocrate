@@ -2,7 +2,6 @@ import '@/app/globals.css';
 import { Image, Sparkles, Star, Trash } from 'lucide-react'
 
 import Nav from '@/components/Nav';
-import Footer from '@/components/Footer';
 import SidebarLinks from '@/components/SidebarLinks';
 
 export default function RootLayout({
@@ -11,10 +10,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="grid grid-rows-[auto_1fr_auto] h-screen">
+    <div className="grid grid-rows-[auto_1fr] h-screen">
       <Nav />
-      <main className="grid grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[12rem_auto]">
-        <aside className="md:my-6">
+      <div className="grid grid-rows-[auto_1fr] md:grid-rows-none md:grid-cols-[12rem_auto]">
+        <aside className="flex flex-col justify-between md:py-6">
           <SidebarLinks
             links={[
               {
@@ -40,9 +39,8 @@ export default function RootLayout({
             ]}
           />
         </aside>
-        <div>{ children }</div>
-      </main>
-      <Footer />
+        <main>{ children }</main>
+      </div>
     </div>
   )
 }
