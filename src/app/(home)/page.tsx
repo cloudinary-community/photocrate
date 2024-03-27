@@ -42,9 +42,9 @@ export default async function Home() {
         </div>
       </Container>
 
-      <Container className="relative max-w-none text-center my-12 bg-[#FBF1E6] py-16">
+      <Container className="relative max-w-none text-center my-12 bg-[#FABD36] py-16">
         <Container className="max-w-2xl">
-          <h2 className="text-2xl md:text-3xl font-bold mb-8">
+          <h2 className="text-2xl md:text-4xl font-bold mb-8">
             Create a new Photobox
           </h2>
           <div className="grid sm:grid-cols-[auto_1fr] gap-2 max-w-lg mx-auto mb-6">

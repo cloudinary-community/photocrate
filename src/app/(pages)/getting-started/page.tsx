@@ -1,3 +1,4 @@
+import CldImage from "@/components/CldImage"
 import Container from "@/components/Container"
 import CopyButton from "@/components/CopyButton"
 
@@ -111,9 +112,33 @@ CLOUDINARY_API_SECRET="<Your API Secret>"
             />
           </div>
 
-          And once your project is started, you should now see your new Photobox project!
+          <p>
+            And once your project is started, you should now see your new Photobox project!
+          </p>
 
+          <p>
+            <CldImage
+              className="shadow-lg rounded-lg"
+              src="assets/photobox-empty_vbojsg"
+              width={1200}
+              height={1200}
+              sizes="100vw"
+              alt="Photobox with no photos uploaded"
+            />
+          </p>
 
+          <p>
+            You&apos;ll notice at first no photos will appear, but that's expect! In order to
+            use Photobox, you need to first upload some photos, so use the Upload button,
+            drag-and-drop or select the images you want to add to your Photobox, then
+            sit back and watch them upload!
+          </p>
+
+          <p>
+            I hope you love your new Photobox! Have any questions or want to request a feature?
+            Head over to the <a href="https://github.com/cloudinary-community/photobox">Photobox GitHub</a> page
+            and <a href="https://github.com/cloudinary-community/photobox/issues/new">create a new Issue</a>!
+          </p>
 
         </div>
       </Container>
