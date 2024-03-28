@@ -45,9 +45,7 @@ npm install
 npm run dev
 ```
 
-And you should now be running Photobox!
-
-The Photobox library is available at http://localhost:3000/.
+And you should now be running Photobox at http://localhost:3000/!
 
 ## Using Photobox
 
