@@ -1,7 +1,7 @@
 "use client";
 
 import { CldImage as CldImageDefault, CldImageProps } from 'next-cloudinary';
-import { PlaceholderValue } from 'next/dist/shared/lib/get-img-props';
+import { ImageProps } from 'next/image';
 
 const shimmer = (w: number, h: number) => `
   <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -31,7 +31,7 @@ const CldImage = (props: CldImageProps) => {
     dataUrl = `data:image/svg+xml;base64,${toBase64(shimmer(props.width, props.height))}`;
   }
 
-  return <CldImageDefault {...props} placeholder={dataUrl as PlaceholderValue} />
+  return <CldImageDefault {...props} placeholder={dataUrl as ImageProps["placeholder"]} />
 }
 
 export default CldImage;

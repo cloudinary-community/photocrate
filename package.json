@@ -1,6 +1,8 @@
 {
-  "name": "demo-cloudinary-photos-starter",
+  "name": "photobox",
   "version": "0.1.0",
+  "author": "Colby Fayock <hello@colbyfayock.com>",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",
