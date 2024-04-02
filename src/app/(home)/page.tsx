@@ -16,7 +16,7 @@ export default async function Home() {
               <Focus className="w-14 h-14" /> Photobox
             </h1>
             <p className="text-lg mb-6">
-              Image library and interactive editor built with Next.js
+              Photo library and interactive editor built with Next.js
             </p>
             <p className="flex gap-4 flex-wrap mb-6 justify-center lg:justify-start">
               <Button size="lg" asChild>
