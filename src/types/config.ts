@@ -3,6 +3,10 @@ import { ReactNode } from "react";
 export interface PhotoboxConfig {
   logo?: ReactNode;
   title?: string;
+  
+  gallery?: {
+    crop?: string;
+  }
 
   assetsFolder: string;
   assetsTag: string;

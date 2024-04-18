@@ -10,6 +10,10 @@ export function getConfig() {
     logo: <Focus className="w-6 h-6" />,
     title: 'Photobox',
 
+    gallery: {
+      crop: 'square'
+    },
+
     // Cloudinary asset management
 
     assetsFolder: process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER || 'photobox',

@@ -18,6 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { CldImageProps } from 'next-cloudinary';
 
 interface MediaGalleryProps {
   resources?: Array<CloudinaryResource>;
@@ -31,7 +32,7 @@ interface Creation {
 }
 
 const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) => {
-  const { creationTag, favoritesTag } = getConfig();
+  const { creationTag, favoritesTag, gallery } = getConfig();
   const { resources, addResources } = useResources({ initialResources, tag });
 
   const [selected, setSelected] = useState<Array<string>>([]);
@@ -271,6 +272,17 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
               {resources.map((resource) => {
                 const isChecked = selected.includes(resource.public_id);
 
+                const imageConfig: Omit<CldImageProps, "alt" | "src"> = {
+                  width: resource.width,
+                  height: resource.height,
+                }
+
+                if ( gallery?.crop === 'square' ) {
+                  imageConfig.width = 700;
+                  imageConfig.height = 700;
+                  imageConfig.crop = 'fill';
+                }
+
                 function handleOnSelectResource(checked: boolean) {
                   setSelected((prev) => {
                     if ( checked ) {
@@ -324,8 +336,7 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                         )}
 
                         <CldImage
-                          width={resource.width}
-                          height={resource.height}
+                          {...imageConfig}
                           src={resource.public_id}
                           alt={`Image ${resource.public_id}`}
                           sizes="(min-width: 768px) calc(33.33vw - 4rem), (min-width: 1024px) calc(25vw - 3rem), (min-width: 1280px) calc(20vw - 2.4rem), 50vw"
