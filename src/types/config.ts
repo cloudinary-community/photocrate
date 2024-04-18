@@ -6,6 +6,10 @@ export interface PhotoboxConfig {
   
   gallery?: {
     crop?: string;
+  };
+
+  editor?: {
+    backgroundRemoval?: boolean;
   }
 
   assetsFolder: string;

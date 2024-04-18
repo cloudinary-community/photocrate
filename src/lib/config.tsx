@@ -14,6 +14,11 @@ export function getConfig() {
       crop: 'square'
     },
 
+    editor: {
+      // Background Removal requires the Cloudinary AI Background Removal Add-On
+      backgroundRemoval: true
+    },
+
     // Cloudinary asset management
 
     assetsFolder: process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER || 'photobox',

@@ -25,7 +25,7 @@ interface Deletion {
 }
 
 const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
-  const { libraryTag, creationTag, trashTag, favoritesTag } = getConfig();
+  const { libraryTag, creationTag, trashTag, favoritesTag, editor } = getConfig();
   const router = useRouter();
 
   const sheetFiltersRef = useRef<HTMLDivElement | null>(null);
@@ -428,16 +428,19 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                     <span className="text-[1.01rem]">Restore</span>
                   </Button>
                 </li>
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === 'remove-background' ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setEnhancement('remove-background')}
-                  >
-                    <ScissorsSquareDashedBottom className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Remove Background</span>
-                  </Button>
-                </li>
+                {/** Background Removal requires the Cloudinary AI Background Removal Add-On */}
+                {editor?.backgroundRemoval === true && (
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === 'remove-background' ? 'border-white' : 'border-transparent'}`}
+                      onClick={() => setEnhancement('remove-background')}
+                    >
+                      <ScissorsSquareDashedBottom className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Remove Background</span>
+                    </Button>
+                  </li>
+                )}
               </ul>
             </TabsContent>
             <TabsContent value="crop">
@@ -832,6 +835,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
           alt={`Image ${resource.public_id}`}
           style={imgStyles}
           version={version}
+          placeholderStyle="dark"
           {...transformations}
         />
       </div>
