@@ -136,7 +136,7 @@ CLOUDINARY_API_SECRET="<Your API Secret>"
           </p>
 
           <p>
-            You&apos;ll notice at first no photos will appear, but that&apos;s expect! In order to
+            You&apos;ll notice at first no photos will appear, but that&apos;s expected! In order to
             use Photobox, you need to first upload some photos, so use the Upload button,
             drag-and-drop or select the images you want to add to your Photobox, then
             sit back and watch them upload!
