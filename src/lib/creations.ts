@@ -1,5 +1,7 @@
 import { getCldImageUrl } from 'next-cloudinary';
 
+import { checkStatus } from '@/lib/utils';
+
 import { CloudinaryResource } from '@/types/cloudinary';
 
 /**
@@ -184,4 +186,48 @@ export function getAnimation(publicIds: Array<CloudinaryResource["public_id"]>) 
     format: 'gif',
     ...template(publicIds)
   })
+}
+
+/**
+ * Color Pop
+ */
+
+export async function getColorPop(publicId: CloudinaryResource["public_id"]) {
+  const backgroundRemovedUrl = getCldImageUrl({
+    src: publicId,
+    removeBackground: true,
+    format: 'png',
+    quality: 'default'
+  });
+
+  await checkStatus(backgroundRemovedUrl);
+
+  const formData = new FormData();
+
+  formData.append('file', backgroundRemovedUrl);
+  formData.append('tags', 'background-removed');
+  formData.append('tags', `original-${publicId}`);
+
+  const backgroundRemovedResource = await fetch('/api/upload', {
+    method: 'POST',
+    body: formData
+  }).then(r => r.json());
+
+  return getCldImageUrl({
+    width: 1200,
+    height: 1200,
+    src: publicId,
+    crop: {
+      type: 'fill',
+      source: true,
+      gravity: 'center'
+    },
+    version: Date.now(),
+    grayscale: true,
+    overlays: [{
+      publicId: backgroundRemovedResource.public_id,
+      width: '1.0',
+      flags: ['relative']
+    }]
+  });
 }

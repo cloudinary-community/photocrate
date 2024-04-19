@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     })
   }
 
-  const { assetsFolder, assetsTag, libraryTag } = getConfig();
+  const { assetsFolder } = getConfig();
 
   const requestFormData = await request.formData()
   const file = requestFormData.get('file') as string;
@@ -34,22 +34,10 @@ export async function POST(request: Request) {
     uploadOptions.public_id = publicId.replace(`${assetsFolder}/`, '');
     uploadOptions.overwrite = true;
     uploadOptions.invalidate = true;
+  }
 
-    // If the upload request is explicitly defining a set of tags, still apply these
-    // in the event they are intended to overwrite the existing tags
-
-    if ( tags ) {
-      uploadOptions.tags = tags;
-    }
-  } else {
-    // We only want to add tags if we're uploading a new image to avoid overwriting existing
-    // tags on an image, which would presumably have the standard tags already applied
-
-    uploadOptions.tags = [
-      assetsTag,
-      libraryTag,
-      ...tags,
-    ]
+  if ( tags ) {
+    uploadOptions.tags = tags;
   }
 
   const results = await cloudinary.uploader.upload(file, uploadOptions);

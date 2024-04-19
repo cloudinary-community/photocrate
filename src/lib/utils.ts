@@ -92,3 +92,22 @@ export async function createHashFromString(data: any, algorithm = 'SHA-256') {
   const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // convert bytes to hex string
   return hashHex;
 }
+
+/**
+ * checkStatus
+ */
+
+export async function checkStatus(url: string) {
+  const resource = await fetch(url);
+
+  if (!resource.ok) {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve(undefined)
+      }, 500)
+    });
+    return await checkStatus(url);
+  }
+
+  return true;
+}

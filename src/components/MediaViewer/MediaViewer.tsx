@@ -25,7 +25,7 @@ interface Deletion {
 }
 
 const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
-  const { libraryTag, creationTag, trashTag, favoritesTag, editor } = getConfig();
+  const { assetsTag, libraryTag, creationTag, trashTag, favoritesTag, editor } = getConfig();
   const router = useRouter();
 
   const sheetFiltersRef = useRef<HTMLDivElement | null>(null);
@@ -198,6 +198,8 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
     formData.append('publicId', resource.public_id);
     formData.append('file', url);
+    formData.append('tags', assetsTag);
+    formData.append('tags', libraryTag);
 
     await save({
       formData,
@@ -229,6 +231,8 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
     formData.append('file', url);
     formData.append('tags', `original-${resource.public_id}`);
+    formData.append('tags', assetsTag);
+    formData.append('tags', libraryTag);
 
     const results = await save({
       formData,

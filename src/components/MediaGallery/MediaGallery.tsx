@@ -7,7 +7,7 @@ import { Plus, X, Save, LayoutPanelLeft, Loader2, SquareStack, Droplet, Sparkles
 import { useResources } from "@/hooks/use-resources";
 import { CloudinaryResource } from '@/types/cloudinary';
 import { getConfig } from '@/lib/config';
-import { getAnimation, getCollage } from "@/lib/creations";
+import { getAnimation, getCollage, getColorPop } from "@/lib/creations";
 import { cn } from '@/lib/utils';
 
 import CldImage from '@/components/CldImage';
@@ -32,7 +32,7 @@ interface Creation {
 }
 
 const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) => {
-  const { creationTag, favoritesTag, gallery } = getConfig();
+  const { assetsTag, libraryTag, creationTag, favoritesTag, gallery } = getConfig();
   const { resources, addResources } = useResources({ initialResources, tag });
 
   const [selected, setSelected] = useState<Array<string>>([]);
@@ -87,17 +87,12 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
       url: undefined
     });
 
-    const results = await fetch('/api/creations/color-pop', {
-      method: 'POST',
-      body: JSON.stringify({
-        publicId: selected[0]
-      })
-    }).then(r => r.json());
+    const url = await getColorPop(selected[0]);
 
     setCreation({
       state: 'created',
       type: 'color-pop',
-      url: results.url
+      url
     });
   }
 
@@ -130,6 +125,8 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
 
     formData.append('file', creation.url);
     formData.append('tags', creationTag);
+    formData.append('tags', assetsTag);
+    formData.append('tags', libraryTag);
 
     // Preload the URL transformation
 
