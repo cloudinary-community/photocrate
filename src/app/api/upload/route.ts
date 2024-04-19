@@ -9,7 +9,11 @@ cloudinary.config({
 })
 
 export async function POST(request: Request) {
-  if ( process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' ) {
+  const requestFormData = await request.formData()
+
+  const skipCheck = requestFormData.get('skip-check') as string;
+
+  if ( process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && skipCheck !== 'true' ) {
     return new Response('Unauthorized', {
       status: 401
     })
@@ -17,7 +21,6 @@ export async function POST(request: Request) {
 
   const { assetsFolder } = getConfig();
 
-  const requestFormData = await request.formData()
   const file = requestFormData.get('file') as string;
   const publicId = requestFormData.get('publicId') as string;
   const tags = requestFormData.getAll('tags') as Array<string> || [];

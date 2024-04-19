@@ -204,6 +204,8 @@ export async function getColorPop(publicId: CloudinaryResource["public_id"]) {
 
   const formData = new FormData();
 
+  // Skip READONLY check so the demo can still preview Color Pop (without saving result)
+  formData.append('skip-check', String(true));
   formData.append('file', backgroundRemovedUrl);
   formData.append('tags', 'background-removed');
   formData.append('tags', `original-${publicId}`);
@@ -226,8 +228,12 @@ export async function getColorPop(publicId: CloudinaryResource["public_id"]) {
     grayscale: true,
     overlays: [{
       publicId: backgroundRemovedResource.public_id,
-      width: '1.0',
-      flags: ['relative']
+      width: 1200,
+      height: 1200,
+      crop: 'fill',
+      position: {
+        gravity: 'center'
+      },
     }]
   });
 }
