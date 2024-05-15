@@ -1,4 +1,4 @@
-# Photobox
+# 📷 Photobox
 
 Google Photos clone for building a dynamic image gallery with Cloudinary.
 
