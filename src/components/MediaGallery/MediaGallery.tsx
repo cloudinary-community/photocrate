@@ -19,6 +19,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { CldImageProps } from 'next-cloudinary';
+import { useKeydown } from '@/hooks/use-keydown';
 
 interface MediaGalleryProps {
   resources?: Array<CloudinaryResource>;
@@ -37,6 +38,13 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
 
   const [selected, setSelected] = useState<Array<string>>([]);
   const [creation, setCreation] = useState<Creation>();
+
+  useKeydown({
+    key: "Escape",
+    handler: (_event: KeyboardEvent) => {
+      setSelected([]);
+    },
+  });
 
   /**
    * handleOnClearSelection
