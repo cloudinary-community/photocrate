@@ -7,6 +7,7 @@ Features include:
 * Image viewer with AI-powered editing
 * Filters and Effects
 * Creations including Collages, Animations, & Color Pop
+* Media Management
 
 ## What's Inside
 
