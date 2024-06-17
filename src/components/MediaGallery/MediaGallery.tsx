@@ -44,7 +44,7 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
     handler: (_event: KeyboardEvent) => {
       setSelected([]);
     },
-    element: document.body
+    element: typeof document !== "undefined" ?  document.body : null
   });
 
   /**

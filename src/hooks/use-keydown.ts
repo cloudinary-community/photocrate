@@ -24,5 +24,5 @@ export const useKeydown = ({key, handler, element }: UseKeyDownParams) => {
     return () => {
       element.removeEventListener('keydown', keydownHandler);
     }
-  }, [element]);
+  }, [key, handler, element]);
 }
