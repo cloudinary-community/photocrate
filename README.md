@@ -1,4 +1,7 @@
 # 📷 Photobox
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Google Photos clone for building a dynamic image gallery with Cloudinary.
 
@@ -127,3 +130,25 @@ NEXT_PUBLIC_CLOUDINARY_CREATION_TAG="<Your Tag>"
 NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG="<Your Tag>"
 NEXT_PUBLIC_CLOUDINARY_TRASH_TAG="<Your Tag>"
 ```
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://colbyfayock.com/newsletter"><img src="https://avatars.githubusercontent.com/u/1045274?v=4?s=100" width="100px;" alt="Colby Fayock"/><br /><sub><b>Colby Fayock</b></sub></a><br /><a href="https://github.com/cloudinary-community/photobox/commits?author=colbyfayock" title="Code">💻</a> <a href="https://github.com/cloudinary-community/photobox/commits?author=colbyfayock" title="Documentation">📖</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
