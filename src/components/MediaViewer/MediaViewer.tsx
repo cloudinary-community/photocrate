@@ -957,7 +957,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
             <DialogTitle>Discard changes?</DialogTitle>
           </DialogHeader>
           <p>
-            Your changes won't be saved
+            Your changes won&apos;t be saved
           </p>
           <DialogFooter>
             <Button
