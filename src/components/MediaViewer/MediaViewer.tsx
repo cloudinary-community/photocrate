@@ -18,6 +18,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { useKeydown } from '@/hooks/use-keydown';
 
 
 interface Deletion {
@@ -30,6 +31,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
   const sheetFiltersRef = useRef<HTMLDivElement | null>(null);
   const sheetInfoRef = useRef<HTMLDivElement | null>(null);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
   const {
     isPending: saveIsPending,
@@ -119,6 +121,24 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
   }
 
   const hasTransformations = !!Object.entries(transformations).length;
+
+  useKeydown({
+    key: "Escape",
+    handler: (_event) => {
+      if (hasTransformations) {
+        setShowConfirmDialog(true);
+        return;
+      }
+
+      if (filterSheetIsOpen) {
+        closeMenus();
+        return;
+      }
+
+      router.back()
+    },
+    element: typeof document !== "undefined" ?  document.body : null
+  });
 
   // Canvas sizing based on the image dimensions. The tricky thing about
   // showing a single image in a space like this in a responsive way is trying
@@ -351,500 +371,616 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
   }
 
   return (
-    <div className="h-screen bg-black px-0">
+    <>
+      <div className="h-screen bg-black px-0">
+        {/** Modal for deletion */}
 
-      {/** Modal for deletion */}
-
-      <Dialog open={deletion && ['confirm', 'deleting'].includes(deletion?.state)} onOpenChange={handleOnDeletionOpenChange}>
-        <DialogContent data-exclude-close-on-click={true}>
-          <DialogHeader>
-            <DialogTitle className="text-center">Are you sure you want to delete?</DialogTitle>
-          </DialogHeader>
-          <DialogFooter className="justify-center sm:justify-center">
-            <Button variant="destructive" onClick={handleOnDelete} disabled={deletion?.state === 'deleting'}>
-              {deletion?.state === 'deleting' && (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              )}
-              {deletion?.state !== 'deleting' && (
-                <Trash2 className="h-4 w-4 mr-2" />
-              )}
-              Delete
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/** Edit panel for transformations and filters */}
-
-      <Sheet modal={false} open={filterSheetIsOpen}>
-        <SheetContent
-          ref={sheetFiltersRef}
-          className="w-full sm:w-3/4 grid grid-rows-[1fr_auto] bg-zinc-800 text-white border-0"
-          data-exclude-close-on-click={true}
+        <Dialog
+          open={deletion && ["confirm", "deleting"].includes(deletion?.state)}
+          onOpenChange={handleOnDeletionOpenChange}
         >
-          <Tabs defaultValue="account">
-            <TabsList className="grid grid-cols-3 w-full bg-transparent p-0">
-              <TabsTrigger value="enhance">
-                <Wand2 />
-                <span className="sr-only">Enhance</span>
-              </TabsTrigger>
-              <TabsTrigger value="crop">
-                <Crop />
-                <span className="sr-only">Crop & Resize</span>
-              </TabsTrigger>
-              <TabsTrigger value="filters">
-                <Blend />
-                <span className="sr-only">Filters</span>
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="enhance">
-              <SheetHeader className="my-4">
-                <SheetTitle className="text-zinc-400 text-sm font-semibold">Enhancements</SheetTitle>
-              </SheetHeader>
-              <ul className="grid gap-2">
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${!enhancement ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setEnhancement(undefined)}
-                  >
-                    <Ban className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">None</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === 'improve' ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setEnhancement('improve')}
-                  >
-                    <Wand2 className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Improve</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === 'restore' ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setEnhancement('restore')}
-                  >
-                    <PencilRuler className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Restore</span>
-                  </Button>
-                </li>
-                {/** Background Removal requires the Cloudinary AI Background Removal Add-On */}
-                {editor?.backgroundRemoval === true && (
+          <DialogContent data-exclude-close-on-click={true}>
+            <DialogHeader>
+              <DialogTitle className="text-center">
+                Are you sure you want to delete?
+              </DialogTitle>
+            </DialogHeader>
+            <DialogFooter className="justify-center sm:justify-center">
+              <Button
+                variant="destructive"
+                onClick={handleOnDelete}
+                disabled={deletion?.state === "deleting"}
+              >
+                {deletion?.state === "deleting" && (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                )}
+                {deletion?.state !== "deleting" && (
+                  <Trash2 className="h-4 w-4 mr-2" />
+                )}
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/** Edit panel for transformations and filters */}
+
+        <Sheet modal={false} open={filterSheetIsOpen}>
+          <SheetContent
+            ref={sheetFiltersRef}
+            className="w-full sm:w-3/4 grid grid-rows-[1fr_auto] bg-zinc-800 text-white border-0"
+            data-exclude-close-on-click={true}
+          >
+            <Tabs defaultValue="account">
+              <TabsList className="grid grid-cols-3 w-full bg-transparent p-0">
+                <TabsTrigger value="enhance">
+                  <Wand2 />
+                  <span className="sr-only">Enhance</span>
+                </TabsTrigger>
+                <TabsTrigger value="crop">
+                  <Crop />
+                  <span className="sr-only">Crop & Resize</span>
+                </TabsTrigger>
+                <TabsTrigger value="filters">
+                  <Blend />
+                  <span className="sr-only">Filters</span>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="enhance">
+                <SheetHeader className="my-4">
+                  <SheetTitle className="text-zinc-400 text-sm font-semibold">
+                    Enhancements
+                  </SheetTitle>
+                </SheetHeader>
+                <ul className="grid gap-2">
                   <li>
                     <Button
                       variant="ghost"
-                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === 'remove-background' ? 'border-white' : 'border-transparent'}`}
-                      onClick={() => setEnhancement('remove-background')}
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${!enhancement ? "border-white" : "border-transparent"}`}
+                      onClick={() => setEnhancement(undefined)}
                     >
-                      <ScissorsSquareDashedBottom className="w-5 h-5 mr-3" />
-                      <span className="text-[1.01rem]">Remove Background</span>
+                      <Ban className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">None</span>
                     </Button>
                   </li>
-                )}
-              </ul>
-            </TabsContent>
-            <TabsContent value="crop">
-              <SheetHeader className="my-4">
-                <SheetTitle className="text-zinc-400 text-sm font-semibold">Cropping & Resizing</SheetTitle>
-              </SheetHeader>
-              <ul className="grid gap-2">
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${!crop ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setCrop(undefined)}
-                  >
-                    <Image className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Original</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${crop === 'landscape' ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setCrop('landscape')}
-                  >
-                    <RectangleHorizontal className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Landscape</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${crop === 'square' ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setCrop('square')}
-                  >
-                    <Square className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Square</span>
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    variant="ghost"
-                    className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${crop === 'portrait' ? 'border-white' : 'border-transparent'}`}
-                    onClick={() => setCrop('portrait')}
-                  >
-                    <RectangleVertical className="w-5 h-5 mr-3" />
-                    <span className="text-[1.01rem]">Portait</span>
-                  </Button>
-                </li>
-              </ul>
-            </TabsContent>
-            <TabsContent value="filters">
-              <SheetHeader className="my-4">
-                <SheetTitle className="text-zinc-400 text-sm font-semibold">Filters</SheetTitle>
-              </SheetHeader>
-              <ul className="grid grid-cols-2 gap-2">
-                <li>
-                  <button
-                    className={`w-full border-4 ${!filter ? 'border-white' : 'border-zinc-700'}`}
-                    onClick={() => setFilter(undefined)}
-                  >
-                    <CldImage
-                      width={300}
-                      height={300}
-                      crop={{
-                        type: 'fill',
-                        source: true
-                      }}
-                      src={resource.public_id}
-                      alt="No Filter"
-                    />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`w-full border-4 ${filter === 'sepia' ? 'border-white' : 'border-zinc-700'}`}
-                    onClick={() => setFilter('sepia')}
-                  >
-                    <CldImage
-                      width={300}
-                      height={300}
-                      crop={{
-                        type: 'fill',
-                        source: true
-                      }}
-                      src={resource.public_id}
-                      alt="Sepia"
-                      sepia
-                    />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`w-full border-4 ${filter === 'eucalyptus' ? 'border-white' : 'border-zinc-700'}`}
-                    onClick={() => setFilter('eucalyptus')}
-                  >
-                    <CldImage
-                      width={300}
-                      height={300}
-                      crop={{
-                        type: 'fill',
-                        source: true
-                      }}
-                      src={resource.public_id}
-                      alt="Eucalyptus"
-                      effects={[{
-                        art: 'eucalyptus'
-                      }]}
-                    />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`w-full border-4 ${filter === 'frost' ? 'border-white' : 'border-zinc-700'}`}
-                    onClick={() => setFilter('frost')}
-                  >
-                    <CldImage
-                      width={300}
-                      height={300}
-                      crop={{
-                        type: 'fill',
-                        source: true
-                      }}
-                      src={resource.public_id}
-                      alt="Frost"
-                      effects={[{
-                        art: 'frost'
-                      }]}
-                    />
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className={`w-full border-4 ${filter === 'grayscale' ? 'border-white' : 'border-zinc-700'}`}
-                    onClick={() => setFilter('grayscale')}
-                  >
-                    <CldImage
-                      width={300}
-                      height={300}
-                      crop={{
-                        type: 'fill',
-                        source: true
-                      }}
-                      src={resource.public_id}
-                      alt="Grayscale"
-                      grayscale
-                    />
-                  </button>
-                </li>
-              </ul>
-            </TabsContent>
-          </Tabs>
-          <SheetFooter className="gap-2 sm:flex-col">
-            {hasTransformations && (
-              <div className={cn(
-                'grid gap-2',
-                process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && !saveIsPending && !copyIsSuccess && 'grid-cols-[1fr_4rem]'
-              )}>
-
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
-                  <Button
-                    variant="ghost"
-                    className="w-full h-14 text-left justify-center items-center bg-blue-500"
-                    onClick={handleOnSave}
-                  >
-                    {!saveIsPending && !copyIsSuccess && (
-                      <span className="text-[1.01rem]">
-                        Save
-                      </span>
-                    )}
-                    {(saveIsPending || copyIsSuccess) && (
-                      <span className="flex gap-2 items-center text-[1.01rem]">
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        {saveType === 'copy' && 'Creating a Copy'}
-                        {saveType === 'update' && 'Saving Changes'}
-                      </span>
-                    )}
-                  </Button>
-                )}
-
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && !saveIsPending && !copyIsSuccess && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === "improve" ? "border-white" : "border-transparent"}`}
+                      onClick={() => setEnhancement("improve")}
+                    >
+                      <Wand2 className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Improve</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === "restore" ? "border-white" : "border-transparent"}`}
+                      onClick={() => setEnhancement("restore")}
+                    >
+                      <PencilRuler className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Restore</span>
+                    </Button>
+                  </li>
+                  {/** Background Removal requires the Cloudinary AI Background Removal Add-On */}
+                  {editor?.backgroundRemoval === true && (
+                    <li>
                       <Button
                         variant="ghost"
-                        className="w-full h-14 text-left justify-center items-center bg-blue-500"
+                        className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${enhancement === "remove-background" ? "border-white" : "border-transparent"}`}
+                        onClick={() => setEnhancement("remove-background")}
                       >
-                        <span className="sr-only">More Options</span>
-                        <ChevronDown className="h-5 w-5" />
+                        <ScissorsSquareDashedBottom className="w-5 h-5 mr-3" />
+                        <span className="text-[1.01rem]">Remove Background</span>
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" data-exclude-close-on-click={true}>
-                      <DropdownMenuGroup>
-                        <DropdownMenuItem onClick={handleOnSaveCopy}>
-                          <span>Save as Copy</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
-                  <TooltipProvider delayDuration={200}>
-                    <Tooltip>
-                      <TooltipTrigger className={`${buttonVariants({ variant: "ghost" })} w-full h-14 justify-center items-center bg-blue-500 hover:bg-blue-500 opacity-70 text-blue-200 hover:text-blue-200`} aria-label="Saving is disabled">
-                        <span className="text-[1.01rem]">
-                          Save
+                    </li>
+                  )}
+                </ul>
+              </TabsContent>
+              <TabsContent value="crop">
+                <SheetHeader className="my-4">
+                  <SheetTitle className="text-zinc-400 text-sm font-semibold">
+                    Cropping & Resizing
+                  </SheetTitle>
+                </SheetHeader>
+                <ul className="grid gap-2">
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${!crop ? "border-white" : "border-transparent"}`}
+                      onClick={() => setCrop(undefined)}
+                    >
+                      <Image className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Original</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${crop === "landscape" ? "border-white" : "border-transparent"}`}
+                      onClick={() => setCrop("landscape")}
+                    >
+                      <RectangleHorizontal className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Landscape</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${crop === "square" ? "border-white" : "border-transparent"}`}
+                      onClick={() => setCrop("square")}
+                    >
+                      <Square className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Square</span>
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      variant="ghost"
+                      className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${crop === "portrait" ? "border-white" : "border-transparent"}`}
+                      onClick={() => setCrop("portrait")}
+                    >
+                      <RectangleVertical className="w-5 h-5 mr-3" />
+                      <span className="text-[1.01rem]">Portait</span>
+                    </Button>
+                  </li>
+                </ul>
+              </TabsContent>
+              <TabsContent value="filters">
+                <SheetHeader className="my-4">
+                  <SheetTitle className="text-zinc-400 text-sm font-semibold">
+                    Filters
+                  </SheetTitle>
+                </SheetHeader>
+                <ul className="grid grid-cols-2 gap-2">
+                  <li>
+                    <button
+                      className={`w-full border-4 ${!filter ? "border-white" : "border-zinc-700"}`}
+                      onClick={() => setFilter(undefined)}
+                    >
+                      <CldImage
+                        width={300}
+                        height={300}
+                        crop={{
+                          type: "fill",
+                          source: true,
+                        }}
+                        src={resource.public_id}
+                        alt="No Filter"
+                      />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`w-full border-4 ${filter === "sepia" ? "border-white" : "border-zinc-700"}`}
+                      onClick={() => setFilter("sepia")}
+                    >
+                      <CldImage
+                        width={300}
+                        height={300}
+                        crop={{
+                          type: "fill",
+                          source: true,
+                        }}
+                        src={resource.public_id}
+                        alt="Sepia"
+                        sepia
+                      />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`w-full border-4 ${filter === "eucalyptus" ? "border-white" : "border-zinc-700"}`}
+                      onClick={() => setFilter("eucalyptus")}
+                    >
+                      <CldImage
+                        width={300}
+                        height={300}
+                        crop={{
+                          type: "fill",
+                          source: true,
+                        }}
+                        src={resource.public_id}
+                        alt="Eucalyptus"
+                        effects={[
+                          {
+                            art: "eucalyptus",
+                          },
+                        ]}
+                      />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`w-full border-4 ${filter === "frost" ? "border-white" : "border-zinc-700"}`}
+                      onClick={() => setFilter("frost")}
+                    >
+                      <CldImage
+                        width={300}
+                        height={300}
+                        crop={{
+                          type: "fill",
+                          source: true,
+                        }}
+                        src={resource.public_id}
+                        alt="Frost"
+                        effects={[
+                          {
+                            art: "frost",
+                          },
+                        ]}
+                      />
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      className={`w-full border-4 ${filter === "grayscale" ? "border-white" : "border-zinc-700"}`}
+                      onClick={() => setFilter("grayscale")}
+                    >
+                      <CldImage
+                        width={300}
+                        height={300}
+                        crop={{
+                          type: "fill",
+                          source: true,
+                        }}
+                        src={resource.public_id}
+                        alt="Grayscale"
+                        grayscale
+                      />
+                    </button>
+                  </li>
+                </ul>
+              </TabsContent>
+            </Tabs>
+            <SheetFooter className="gap-2 sm:flex-col">
+              {hasTransformations && (
+                <div
+                  className={cn(
+                    "grid gap-2",
+                    process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" &&
+                      !saveIsPending &&
+                      !copyIsSuccess &&
+                      "grid-cols-[1fr_4rem]",
+                  )}
+                >
+                  {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" && (
+                    <Button
+                      variant="ghost"
+                      className="w-full h-14 text-left justify-center items-center bg-blue-500"
+                      onClick={handleOnSave}
+                    >
+                      {!saveIsPending && !copyIsSuccess && (
+                        <span className="text-[1.01rem]">Save</span>
+                      )}
+                      {(saveIsPending || copyIsSuccess) && (
+                        <span className="flex gap-2 items-center text-[1.01rem]">
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          {saveType === "copy" && "Creating a Copy"}
+                          {saveType === "update" && "Saving Changes"}
                         </span>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Saving is Disabled</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                )}
-              </div>
-            )}
-            <Button
-              variant="outline"
-              className="w-full h-14 text-left justify-center items-center bg-transparent border-zinc-600"
-              onClick={() => {
-                closeMenus();
-                discardChanges();
-              }}
-            >
-              <span className="text-[1.01rem]">
-                {hasTransformations ? 'Cancel' : 'Close'}
-              </span>
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+                      )}
+                    </Button>
+                  )}
 
-      {/** Info panel for asset metadata */}
+                  {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" &&
+                    !saveIsPending &&
+                    !copyIsSuccess && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            className="w-full h-14 text-left justify-center items-center bg-blue-500"
+                          >
+                            <span className="sr-only">More Options</span>
+                            <ChevronDown className="h-5 w-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          className="w-56"
+                          data-exclude-close-on-click={true}
+                        >
+                          <DropdownMenuGroup>
+                            <DropdownMenuItem onClick={handleOnSaveCopy}>
+                              <span>Save as Copy</span>
+                            </DropdownMenuItem>
+                          </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
 
-      <Sheet modal={false} open={infoSheetIsOpen}>
-        <SheetContent
-          ref={sheetInfoRef}
-          className="w-full sm:w-3/4 grid grid-rows-[auto_1fr_auto] bg-zinc-800 text-white border-0"
-          data-exclude-close-on-click={true}
-        >
-          <SheetHeader className="my-4">
-            <SheetTitle className="text-zinc-200 font-semibold">Info</SheetTitle>
-          </SheetHeader>
-          <div>
-            <ul>
-            <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">ID</strong>
-                <span className="flex gap-4 items-center text-zinc-100">
-                  { resource.public_id }
-                  <button
-                    className="flex items-center justify-center rounded-full p-1 hover:bg-white hover:text-zinc-800 active:text-primary"
-                    onClick={async () => await navigator.clipboard.writeText(resource.public_id)}
-                  >
-                    <Copy className="w-4 h-4" />
-                    <span className="sr-only">Copy ID</span>
-                  </button>
+                  {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === "read-only" && (
+                    <TooltipProvider delayDuration={200}>
+                      <Tooltip>
+                        <TooltipTrigger
+                          className={`${buttonVariants({ variant: "ghost" })} w-full h-14 justify-center items-center bg-blue-500 hover:bg-blue-500 opacity-70 text-blue-200 hover:text-blue-200`}
+                          aria-label="Saving is disabled"
+                        >
+                          <span className="text-[1.01rem]">Save</span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Saving is Disabled</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+              )}
+              <Button
+                variant="outline"
+                className="w-full h-14 text-left justify-center items-center bg-transparent border-zinc-600"
+                onClick={() => {
+                  closeMenus();
+                  discardChanges();
+                }}
+              >
+                <span className="text-[1.01rem]">
+                  {hasTransformations ? "Cancel" : "Close"}
                 </span>
-              </li>
-              <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">Date Created</strong>
-                <span className="block text-zinc-100">{ new Date(resource.created_at).toLocaleString() }</span>
-              </li>
-              <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">Width</strong>
-                <span className="block text-zinc-100">{ addCommas(resource.width) }</span>
-              </li>
-              <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">Height</strong>
-                <span className="block text-zinc-100">{ addCommas(resource.height) }</span>
-              </li>
-              <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">Size</strong>
-                <span className="block text-zinc-100">{ formatBytes(resource.bytes) }</span>
-              </li>
-              <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">Format</strong>
-                <span className="block text-zinc-100">{ resource.format }</span>
-              </li>
-              <li className="mb-3">
-                <strong className="block text-xs font-normal text-zinc-400 mb-1">Tags</strong>
-                <span className="block text-zinc-100">{ resource.tags.join(', ') }</span>
+              </Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+
+        {/** Info panel for asset metadata */}
+
+        <Sheet modal={false} open={infoSheetIsOpen}>
+          <SheetContent
+            ref={sheetInfoRef}
+            className="w-full sm:w-3/4 grid grid-rows-[auto_1fr_auto] bg-zinc-800 text-white border-0"
+            data-exclude-close-on-click={true}
+          >
+            <SheetHeader className="my-4">
+              <SheetTitle className="text-zinc-200 font-semibold">
+                Info
+              </SheetTitle>
+            </SheetHeader>
+            <div>
+              <ul>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    ID
+                  </strong>
+                  <span className="flex gap-4 items-center text-zinc-100">
+                    {resource.public_id}
+                    <button
+                      className="flex items-center justify-center rounded-full p-1 hover:bg-white hover:text-zinc-800 active:text-primary"
+                      onClick={async () =>
+                        await navigator.clipboard.writeText(resource.public_id)
+                      }
+                    >
+                      <Copy className="w-4 h-4" />
+                      <span className="sr-only">Copy ID</span>
+                    </button>
+                  </span>
+                </li>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    Date Created
+                  </strong>
+                  <span className="block text-zinc-100">
+                    {new Date(resource.created_at).toLocaleString()}
+                  </span>
+                </li>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    Width
+                  </strong>
+                  <span className="block text-zinc-100">
+                    {addCommas(resource.width)}
+                  </span>
+                </li>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    Height
+                  </strong>
+                  <span className="block text-zinc-100">
+                    {addCommas(resource.height)}
+                  </span>
+                </li>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    Size
+                  </strong>
+                  <span className="block text-zinc-100">
+                    {formatBytes(resource.bytes)}
+                  </span>
+                </li>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    Format
+                  </strong>
+                  <span className="block text-zinc-100">{resource.format}</span>
+                </li>
+                <li className="mb-3">
+                  <strong className="block text-xs font-normal text-zinc-400 mb-1">
+                    Tags
+                  </strong>
+                  <span className="block text-zinc-100">
+                    {resource.tags.join(", ")}
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <SheetFooter>
+              <Button
+                variant="outline"
+                className="w-full h-14 text-left justify-center items-center bg-transparent border-zinc-600"
+                onClick={() => closeMenus()}
+              >
+                <span className="text-[1.01rem]">Close</span>
+              </Button>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
+
+        {/** Asset management navbar */}
+
+        <Container className="fixed z-10 top-0 left-0 w-full h-16 flex items-center justify-between gap-4 bg-gradient-to-b from-black">
+          <div className="flex items-center gap-4">
+            <ul>
+              <li>
+                <button
+                  className={`${buttonVariants({ variant: "ghost" })} text-white`}
+                  onClick={() => router.back()}
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                  Back
+                </button>
               </li>
             </ul>
           </div>
-          <SheetFooter>
-            <Button
-              variant="outline"
-              className="w-full h-14 text-left justify-center items-center bg-transparent border-zinc-600"
-              onClick={() => closeMenus()}
-            >
-              <span className="text-[1.01rem]">Close</span>
-            </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
-
-      {/** Asset management navbar */}
-
-      <Container className="fixed z-10 top-0 left-0 w-full h-16 flex items-center justify-between gap-4 bg-gradient-to-b from-black">
-        <div className="flex items-center gap-4">
-          <ul>
+          <ul className="flex items-center gap-4">
             <li>
-              <button className={`${buttonVariants({ variant: "ghost" })} text-white`} onClick={() => router.back()}>
-                <ChevronLeft className="h-6 w-6" />
-                Back
-              </button>
-            </li>
-          </ul>
-        </div>
-        <ul className="flex items-center gap-4">
-          <li>
-            <Button variant="ghost" className="text-white" onClick={() => setFilterSheetIsOpen(true)}>
-              <Pencil className="h-6 w-6" />
-              <span className="sr-only">Edit</span>
-            </Button>
-          </li>
-          <li>
-            <Button variant="ghost" className="text-white" onClick={() => setInfoSheetIsOpen(true)}>
-              <Info className="h-6 w-6" />
-              <span className="sr-only">Info</span>
-            </Button>
-          </li>
-          <li>
-            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
-              <Button variant="ghost" className="text-white" onClick={handleOnFavoriteToggle}>
-                <Star
-                  className="h-6 w-6"
-                  {...(isFavorite && { fill: 'white' })}
-                />
-                <span className="sr-only">Favorite</span>
+              <Button
+                variant="ghost"
+                className="text-white"
+                onClick={() => setFilterSheetIsOpen(true)}
+              >
+                <Pencil className="h-6 w-6" />
+                <span className="sr-only">Edit</span>
               </Button>
-            )}
-            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
-              <TooltipProvider delayDuration={200}>
-                <Tooltip>
-                  <TooltipTrigger className={`${buttonVariants({ variant: "ghost" })} text-zinc-500 hover:text-zinc-500 bg-transparent hover:bg-transparent`} aria-label="Favoriting is disabled">
-                    <Star
-                      className="h-6 w-6"
-                      {...(isFavorite && { fill: 'white' })}
-                    />
-                    <span className="sr-only">Favorite</span>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Favoriting is Disabled</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </li>
-          { !isTrash && (
+            </li>
             <li>
-              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
-                <Button variant="ghost" className="text-white" onClick={() => setDeletion({ state: 'confirm' })}>
-                  <Trash2 className="h-6 w-6" />
-                  <span className="sr-only">Delete</span>
+              <Button
+                variant="ghost"
+                className="text-white"
+                onClick={() => setInfoSheetIsOpen(true)}
+              >
+                <Info className="h-6 w-6" />
+                <span className="sr-only">Info</span>
+              </Button>
+            </li>
+            <li>
+              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" && (
+                <Button
+                  variant="ghost"
+                  className="text-white"
+                  onClick={handleOnFavoriteToggle}
+                >
+                  <Star
+                    className="h-6 w-6"
+                    {...(isFavorite && { fill: "white" })}
+                  />
+                  <span className="sr-only">Favorite</span>
                 </Button>
               )}
-              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === "read-only" && (
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
-                    <TooltipTrigger className={`${buttonVariants({ variant: "ghost" })} text-zinc-500 hover:text-zinc-500 bg-transparent hover:bg-transparent`} aria-label="Deleting is disabled">
-                      <Trash2 className="h-6 w-6" />
-                      <span className="sr-only">Delete</span>
+                    <TooltipTrigger
+                      className={`${buttonVariants({ variant: "ghost" })} text-zinc-500 hover:text-zinc-500 bg-transparent hover:bg-transparent`}
+                      aria-label="Favoriting is disabled"
+                    >
+                      <Star
+                        className="h-6 w-6"
+                        {...(isFavorite && { fill: "white" })}
+                      />
+                      <span className="sr-only">Favorite</span>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Deleting is Disabled</p>
+                      <p>Favoriting is Disabled</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}
             </li>
-          )}
-          { isTrash && (
-            <li>
-              <Button variant="ghost" className="text-white" onClick={handleOnRestore}>
-                <History className="h-6 w-6" />
-                <span className="sr-only">Restore</span>
-              </Button>
-            </li>
-          )}
-        </ul>
-      </Container>
+            {!isTrash && (
+              <li>
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" && (
+                  <Button
+                    variant="ghost"
+                    className="text-white"
+                    onClick={() => setDeletion({ state: "confirm" })}
+                  >
+                    <Trash2 className="h-6 w-6" />
+                    <span className="sr-only">Delete</span>
+                  </Button>
+                )}
+                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === "read-only" && (
+                  <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+                      <TooltipTrigger
+                        className={`${buttonVariants({ variant: "ghost" })} text-zinc-500 hover:text-zinc-500 bg-transparent hover:bg-transparent`}
+                        aria-label="Deleting is disabled"
+                      >
+                        <Trash2 className="h-6 w-6" />
+                        <span className="sr-only">Delete</span>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Deleting is Disabled</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </li>
+            )}
+            {isTrash && (
+              <li>
+                <Button
+                  variant="ghost"
+                  className="text-white"
+                  onClick={handleOnRestore}
+                >
+                  <History className="h-6 w-6" />
+                  <span className="sr-only">Restore</span>
+                </Button>
+              </li>
+            )}
+          </ul>
+        </Container>
 
-      {/** Asset viewer */}
+        {/** Asset viewer */}
 
-      <div className="relative flex justify-center items-center align-center w-full h-full">
-        <CldImage
-          key={`${JSON.stringify(transformations)}-${version}`}
-          className="object-contain"
-          width={resource.width}
-          height={resource.height}
-          src={resource.public_id}
-          alt={`Image ${resource.public_id}`}
-          style={imgStyles}
-          version={version}
-          placeholderStyle="dark"
-          {...transformations}
-        />
+        <div className="relative flex justify-center items-center align-center w-full h-full">
+          <CldImage
+            key={`${JSON.stringify(transformations)}-${version}`}
+            className="object-contain"
+            width={resource.width}
+            height={resource.height}
+            src={resource.public_id}
+            alt={`Image ${resource.public_id}`}
+            style={imgStyles}
+            version={version}
+            placeholderStyle="dark"
+            {...transformations}
+          />
+        </div>
       </div>
-    </div>
-  )
+
+      {/** Confirmation dialog to display if there are unsaved edits */}
+
+      <Dialog open={showConfirmDialog}>
+        <DialogContent data-exclude-close-on-click={true}>
+          <DialogHeader>
+            <DialogTitle>Discard changes?</DialogTitle>
+          </DialogHeader>
+          <p>
+            Your changes won&apos;t be saved
+          </p>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                setShowConfirmDialog(false);
+              }}
+            >
+              Keep editing
+            </Button>
+            <Button
+              onClick={() => {
+                discardChanges();
+                closeMenus();
+                setShowConfirmDialog(false);
+              }}
+            >
+              Discard
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
 
 export default MediaViewer;
