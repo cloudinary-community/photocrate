@@ -130,6 +130,11 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
         return;
       }
 
+      if (filterSheetIsOpen) {
+        closeMenus();
+        return;
+      }
+
       router.back()
     },
     element: typeof document !== "undefined" ?  document.body : null
