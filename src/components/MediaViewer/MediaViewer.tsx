@@ -947,28 +947,29 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
       {/** Confirmation dialog to display if there are unsaved edits */}
 
       <Dialog open={showConfirmDialog}>
-        <DialogContent>
+        <DialogContent data-exclude-close-on-click={true}>
           <DialogHeader>
-            <DialogTitle>Save Changes?</DialogTitle>
+            <DialogTitle>Discard changes?</DialogTitle>
           </DialogHeader>
           <p>
-            You have unsaved changes that will be lost. Do you still want to
-            navigate back to the main gallery?
+            Your changes won't be saved
           </p>
           <DialogFooter>
-            <Button
-              onClick={() => {
-                router.back();
-              }}
-            >
-              Yes
-            </Button>
             <Button
               onClick={() => {
                 setShowConfirmDialog(false);
               }}
             >
-              No
+              Keep editing
+            </Button>
+            <Button
+              onClick={() => {
+                discardChanges();
+                closeMenus();
+                setShowConfirmDialog(false);
+              }}
+            >
+              Discard
             </Button>
           </DialogFooter>
         </DialogContent>
