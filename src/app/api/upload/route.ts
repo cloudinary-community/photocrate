@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
   const skipCheck = requestFormData.get('skip-check') as string;
 
-  if ( process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && skipCheck !== 'true' ) {
+  if ( process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === 'read-only' && skipCheck !== 'true' ) {
     return new Response('Unauthorized', {
       status: 401
     })

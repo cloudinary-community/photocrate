@@ -19,10 +19,10 @@ const Nav = () => {
         </p>
         <ul className="flex flex-grow justify-end gap-6 m-0">
           <li>
-            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+            {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== 'read-only' && (
               <UploadButton />
             )}
-            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+            {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === 'read-only' && (
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger className="flex items-center text-zinc-400" aria-label="Uploading is disabled">

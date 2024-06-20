@@ -8,7 +8,7 @@ export function getConfig() {
     // Customization
 
     logo: <Focus className="w-6 h-6" />,
-    title: 'Photobox',
+    title: 'PhotoCrate',
 
     gallery: {
       crop: 'square'
@@ -21,12 +21,12 @@ export function getConfig() {
 
     // Cloudinary asset management
 
-    assetsFolder: process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER || 'photobox',
-    assetsTag: process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG || 'photobox',
-    libraryTag: process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG || 'photobox-library',
-    creationTag: process.env.NEXT_PUBLIC_CLOUDINARY_CREATION_TAG || 'photobox-creation',
-    favoritesTag: process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG || 'photobox-favorite',
-    trashTag: process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG || 'photobox-trash',
+    assetsFolder: process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_FOLDER || 'photocrate',
+    assetsTag: process.env.NEXT_PUBLIC_CLOUDINARY_ASSETS_TAG || 'photocrate',
+    libraryTag: process.env.NEXT_PUBLIC_CLOUDINARY_LIBRARY_TAG || 'photocrate-library',
+    creationTag: process.env.NEXT_PUBLIC_CLOUDINARY_CREATION_TAG || 'photocrate-creation',
+    favoritesTag: process.env.NEXT_PUBLIC_CLOUDINARY_FAVORITES_TAG || 'photocrate-favorite',
+    trashTag: process.env.NEXT_PUBLIC_CLOUDINARY_TRASH_TAG || 'photocrate-trash',
 
     // Apply custom settings based on theme configuration
 

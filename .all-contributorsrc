@@ -31,6 +31,6 @@
   "skipCi": true,
   "repoType": "github",
   "repoHost": "https://github.com",
-  "projectName": "photobox",
+  "projectName": "photocrate",
   "projectOwner": "cloudinary-community"
 }

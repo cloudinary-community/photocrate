@@ -639,13 +639,13 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                 <div
                   className={cn(
                     "grid gap-2",
-                    process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" &&
+                    process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== "read-only" &&
                       !saveIsPending &&
                       !copyIsSuccess &&
                       "grid-cols-[1fr_4rem]",
                   )}
                 >
-                  {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" && (
+                  {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== "read-only" && (
                     <Button
                       variant="ghost"
                       className="w-full h-14 text-left justify-center items-center bg-blue-500"
@@ -664,7 +664,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                     </Button>
                   )}
 
-                  {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" &&
+                  {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== "read-only" &&
                     !saveIsPending &&
                     !copyIsSuccess && (
                       <DropdownMenu>
@@ -690,7 +690,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       </DropdownMenu>
                     )}
 
-                  {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === "read-only" && (
+                  {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === "read-only" && (
                     <TooltipProvider delayDuration={200}>
                       <Tooltip>
                         <TooltipTrigger
@@ -853,7 +853,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
               </Button>
             </li>
             <li>
-              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" && (
+              {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== "read-only" && (
                 <Button
                   variant="ghost"
                   className="text-white"
@@ -866,7 +866,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                   <span className="sr-only">Favorite</span>
                 </Button>
               )}
-              {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === "read-only" && (
+              {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === "read-only" && (
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger
@@ -888,7 +888,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
             </li>
             {!isTrash && (
               <li>
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== "read-only" && (
+                {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== "read-only" && (
                   <Button
                     variant="ghost"
                     className="text-white"
@@ -898,7 +898,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                     <span className="sr-only">Delete</span>
                   </Button>
                 )}
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === "read-only" && (
+                {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === "read-only" && (
                   <TooltipProvider delayDuration={200}>
                     <Tooltip>
                       <TooltipTrigger

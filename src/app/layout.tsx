@@ -13,14 +13,14 @@ const { title } = getConfig();
 
 export const metadata: Metadata = {
   title,
-  description: 'Learn more at photobox.dev!',
+  // description: 'Learn more at ',
   openGraph: {
     images: [
       {
         width: 1200,
         height: 627,
         url: getCldOgImageUrl({
-          src: 'https://res.cloudinary.com/photoboxdev/image/upload/v1711559782/assets/photobox-social-og_mppn8w.png'
+          src: 'https://res.cloudinary.com/photocrate/image/upload/v1711559782/assets/photocrate-social-og_mppn8w.png'
         })
       }
     ]

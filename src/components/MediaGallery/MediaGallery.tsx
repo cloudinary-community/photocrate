@@ -181,7 +181,7 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                 )}
               </div>
               <DialogFooter className="justify-end sm:justify-end">
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+                {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== 'read-only' && (
                   <Button onClick={handleOnSaveCreation} disabled={creation?.state === 'saving'}>
                     {creation?.state === 'saving' && (
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -192,7 +192,7 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                     Save to Library
                   </Button>
                 )}
-                {process.env.NEXT_PUBLIC_PHOTOBOX_MODE === 'read-only' && (
+                {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === 'read-only' && (
                   <TooltipProvider delayDuration={200}>
                     <Tooltip>
                       <TooltipTrigger className={`${buttonVariants()} text-blue-200 hover:text-blue-200 opacity-70`} aria-label="Saving is disabled">
@@ -357,8 +357,8 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
         )}
         {(!Array.isArray(resources) || resources.length === 0) && (
           <div className="w-full text-center pt-12">
-            <p className="text-xl mb-4">Your Photobox is empty!</p>
-            {process.env.NEXT_PUBLIC_PHOTOBOX_MODE !== 'read-only' && (
+            <p className="text-xl mb-4">Your PhotoCrate is empty!</p>
+            {process.env.NEXT_PUBLIC_PHOTOCRATE_MODE !== 'read-only' && (
               <p>
                 <UploadButton>
                   <span className={`${buttonVariants()} flex items-center`}>

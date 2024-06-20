@@ -1,4 +1,4 @@
-# 📷 Photobox
+# 📷 PhotoCrate
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
@@ -6,7 +6,7 @@
 Google Photos clone for building a dynamic image gallery with Cloudinary.
 
 Features include:
-* Gallery view of all Photobox-uploaded images
+* Gallery view of all PhotoCrate-uploaded images
 * Image viewer with AI-powered editing
 * Filters and Effects
 * Creations including Collages, Animations, & Color Pop
@@ -14,7 +14,7 @@ Features include:
 
 ## What's Inside
 
-Technology used to build Photobox includes:
+Technology used to build PhotoCrate includes:
 
 * Next.js App Router
 * React Server Components for initial resource queries
@@ -29,7 +29,7 @@ Technology used to build Photobox includes:
 1. Create a new local project
 
 ```
-npx create-next-app@latest https://github.com/cloudinary-community/photobox photobox
+npx create-next-app@latest https://github.com/cloudinary-community/photocrate photocrate
 ```
 
 You can also fork or clone the project manually!
@@ -49,31 +49,31 @@ npm install
 npm run dev
 ```
 
-And you should now be running Photobox at http://localhost:3000/!
+And you should now be running PhotoCrate at http://localhost:3000/!
 
-## Using Photobox
+## Using PhotoCrate
 
-To start using Photobox, simply upload some images! The Upload button can be found on the top right of the library page.
+To start using PhotoCrate, simply upload some images! The Upload button can be found on the top right of the library page.
 
 After uploading, the image should now show up in your gallery where you can either start adding Creations from your image or edit it by navigating to a particular image.
 
-Photobox takes advantage of both folders and tags to organize the images in your Cloudinary account. By default, all images are uploaded to a "photobox" folder and tagged with "photobox" and other tags prepended with "photobox-". This makes it easy to keep track of what images should be included in Photobox without cluttering your existing account. 
+PhotoCrate takes advantage of both folders and tags to organize the images in your Cloudinary account. By default, all images are uploaded to a "photocrate" folder and tagged with "photocrate" and other tags prepended with "photocrate-". This makes it easy to keep track of what images should be included in PhotoCrate without cluttering your existing account. 
 
 ## Configuration
 
-Photobox ships with some default configurations to help you get started, but is
+PhotoCrate ships with some default configurations to help you get started, but is
 customizable based on your needs or preferences.
 
 ### Customization
 
-To personalize your Photobox without manually updating the code, a few options
+To personalize your PhotoCrate without manually updating the code, a few options
 are made available for configuration.
 
 The default values used for these are:
 
 ```jsx
 const config = {
-  title: 'Photobox'
+  title: 'PhotoCrate'
   logo: <Focus className="w-6 h-6" />,
 };
 ```
@@ -96,12 +96,12 @@ The default values used for these are:
 
 ```jsx
 const config = {
-  assetsFolder:  'photobox',
-  assetsTag: 'photobox',
-  libraryTag: 'photobox-library',
-  creationTag: 'photobox-creation',
-  favoritesTag: 'photobox-favorite',
-  trashTag: 'photobox-trash',
+  assetsFolder:  'photocrate',
+  assetsTag: 'photocrate',
+  libraryTag: 'photocrate-library',
+  creationTag: 'photocrate-creation',
+  favoritesTag: 'photocrate-favorite',
+  trashTag: 'photocrate-trash',
 };
 ```
 
@@ -142,8 +142,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://colbyfayock.com/newsletter"><img src="https://avatars.githubusercontent.com/u/1045274?v=4?s=100" width="100px;" alt="Colby Fayock"/><br /><sub><b>Colby Fayock</b></sub></a><br /><a href="https://github.com/cloudinary-community/photobox/commits?author=colbyfayock" title="Code">💻</a> <a href="https://github.com/cloudinary-community/photobox/commits?author=colbyfayock" title="Documentation">📖</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://nickyt.co"><img src="https://avatars.githubusercontent.com/u/833231?v=4?s=100" width="100px;" alt="Nick Taylor"/><br /><sub><b>Nick Taylor</b></sub></a><br /><a href="https://github.com/cloudinary-community/photobox/commits?author=nickytonline" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://colbyfayock.com/newsletter"><img src="https://avatars.githubusercontent.com/u/1045274?v=4?s=100" width="100px;" alt="Colby Fayock"/><br /><sub><b>Colby Fayock</b></sub></a><br /><a href="https://github.com/cloudinary-community/photocrate/commits?author=colbyfayock" title="Code">💻</a> <a href="https://github.com/cloudinary-community/photocrate/commits?author=colbyfayock" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://nickyt.co"><img src="https://avatars.githubusercontent.com/u/833231?v=4?s=100" width="100px;" alt="Nick Taylor"/><br /><sub><b>Nick Taylor</b></sub></a><br /><a href="https://github.com/cloudinary-community/photocrate/commits?author=nickytonline" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
