@@ -1,8 +1,8 @@
-# Photobox.dev
+# PhotoCrate.dev
 
-Website for Photobox.dev
+Website for PhotoCrate.dev
 
-> Looking for the Photobox repository? Check the `main` branch: https://github.com/cloudinary-community/photobox/tree/main
+> Looking for the PhotoCrate repository? Check the `main` branch: https://github.com/cloudinary-community/photocrate/tree/main
 
 ## Getting Started
 

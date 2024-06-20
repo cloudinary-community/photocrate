@@ -7,7 +7,7 @@ import { Analytics } from '@vercel/analytics/react';
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Photobox',
+  title: 'PhotoCrate',
   description: 'Open Source photo library and interactive editor built with Next.js and Cloudinary.',
   openGraph: {
     images: [
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 627,
         url: getCldOgImageUrl({
-          src: 'assets/photobox-social-og_mppn8w'
+          src: 'assets/photocrate-social-og_ta1w3j'
         })
       }
     ]
