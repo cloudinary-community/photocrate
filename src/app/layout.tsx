@@ -20,7 +20,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 627,
         url: getCldOgImageUrl({
-          src: 'https://res.cloudinary.com/photocrate/image/upload/v1711559782/assets/photocrate-social-og_mppn8w.png'
+          src: 'https://res.cloudinary.com/photocrate/image/upload/v1718902268/assets/photocrate-social-og_ta1w3j.png'
         })
       }
     ]
