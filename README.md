@@ -29,7 +29,7 @@ Technology used to build PhotoCrate includes:
 1. Create a new local project
 
 ```
-npx create-next-app@latest https://github.com/cloudinary-community/photocrate photocrate
+npx create-next-app@latest -e https://github.com/cloudinary-community/photocrate photocrate
 ```
 
 You can also fork or clone the project manually!
