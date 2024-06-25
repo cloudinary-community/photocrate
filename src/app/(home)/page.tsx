@@ -27,7 +27,7 @@ export default async function Home() {
               </Button>
             </p>
             <p className="text-sm">
-              Or <a className="text-blue-600 underline" href="https://demo.photocrate.dev">check out the demo</a>.
+              Or <a className="text-blue-600 underline" href="https://photocrate-demo.vercel.app/">check out the demo</a>.
             </p>
           </div>
           <div className="relative lg:scale-125 lg:-right-20">
@@ -62,7 +62,7 @@ export default async function Home() {
             Or deploy your new library!
           </p>
           <p>
-            <a className="inline-block" href="https://vercel.com/new/clone?demo-description=Photo%20library%20and%20interactive%20editor%20built%20with%20Next.js&demo-image=https%3A%2F%2Fres.cloudinary.com%2Fphotocrate%2Fimage%2Fupload%2Ff_auto%2Fq_auto%2Fassets%2Fvercel-deploy-photocrate-media-library_gutzgq&demo-title=PhotoCrate&demo-url=https%3A%2F%2Fdemo.photocrate.dev%2F&project-name=PhotoCrate&repository-name=photocrate&repository-url=https%3A%2F%2Fgithub.com%2Fcloudinary-community%2Fphotocrate&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,NEXT_PUBLIC_CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET&envDescription=Cloudinary%20credentials%20needed%20to%20connect%20PhotoCrate%20to%20your%20account.&envLink=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D1SIp9VL5TMo">
+            <a className="inline-block" href="https://vercel.com/new/clone?demo-description=Photo%20library%20and%20interactive%20editor%20built%20with%20Next.js&demo-image=https%3A%2F%2Fres.cloudinary.com%2Fphotocrate%2Fimage%2Fupload%2Ff_auto%2Fq_auto%2Fassets%2Fvercel-deploy-photocrate-media-library_gutzgq&demo-title=PhotoCrate&demo-url=https%3A%2F%2Fphotocrate-demo.vercel.app/%2F&project-name=PhotoCrate&repository-name=photocrate&repository-url=https%3A%2F%2Fgithub.com%2Fcloudinary-community%2Fphotocrate&env=NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,NEXT_PUBLIC_CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET&envDescription=Cloudinary%20credentials%20needed%20to%20connect%20PhotoCrate%20to%20your%20account.&envLink=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3D1SIp9VL5TMo">
               <CldImage
                 deliveryType="fetch"
                 format="svg"
