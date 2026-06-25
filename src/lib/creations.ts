@@ -204,8 +204,10 @@ export async function getColorPop(publicId: CloudinaryResource["public_id"]) {
 
   const formData = new FormData();
 
-  // Skip READONLY check so the demo can still preview Color Pop (without saving result)
-  formData.append('skip-check', String(true));
+  if (process.env.NEXT_PUBLIC_PHOTOCRATE_DEMO_MODE === 'true') {
+    formData.append('skip-check', String(true));
+  }
+
   formData.append('file', backgroundRemovedUrl);
   formData.append('tags', 'background-removed');
   formData.append('tags', `original-${publicId}`);

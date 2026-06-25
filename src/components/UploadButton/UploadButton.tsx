@@ -1,15 +1,17 @@
 "use client";
 
+import { ReactNode } from 'react';
 import { Upload } from 'lucide-react';
 import { CloudinaryUploadWidgetResults } from 'next-cloudinary';
 
 import { useResources } from '@/hooks/use-resources';
 import { getConfig } from '@/lib/config';
+import { CloudinaryResource } from '@/types/cloudinary';
 
 import CldUploadButton from "@/components/CldUploadButton";
 
 interface UploadButtonProps {
-  children?: JSX.Element
+  children?: ReactNode
 }
 
 const UploadButton = ({ children }: UploadButtonProps) => {
@@ -21,7 +23,7 @@ const UploadButton = ({ children }: UploadButtonProps) => {
 
   async function handleOnSuccess(results: CloudinaryUploadWidgetResults) {
     if ( typeof results?.info === 'object' ) {
-      addResources([results.info]);
+      addResources([results.info as CloudinaryResource]);
     }
   }
 
