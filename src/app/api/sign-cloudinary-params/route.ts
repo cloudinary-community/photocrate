@@ -1,22 +1,29 @@
-import { v2 as cloudinary } from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
+import { getCloudinary } from '@/lib/cloudinary-server';
+import { UploadSigningError, validateParamsToSign } from '@/lib/upload-signing';
+import { isReadOnlyMode } from '@/lib/upload-validation';
 
 export async function POST(request: Request) {
-  if ( process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === 'read-only' ) {
-    return new Response('Unauthorized', {
-      status: 401
-    })
+  if (isReadOnlyMode()) {
+    return new Response('Unauthorized', { status: 401 });
   }
 
-  const body = await request.json();
-  const { paramsToSign } = body;
+  try {
+    const body = await request.json();
+    const { paramsToSign } = body;
+    const sanitizedParams = validateParamsToSign(paramsToSign);
+    const cloudinary = getCloudinary();
 
-  const signature = cloudinary.utils.api_sign_request(paramsToSign, String(process.env.CLOUDINARY_API_SECRET));
+    const signature = cloudinary.utils.api_sign_request(
+      sanitizedParams,
+      String(process.env.CLOUDINARY_API_SECRET)
+    );
 
-  return Response.json({ signature });
+    return Response.json({ signature });
+  } catch (error) {
+    if (error instanceof UploadSigningError) {
+      return new Response(error.message, { status: 400 });
+    }
+
+    throw error;
+  }
 }
