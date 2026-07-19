@@ -3,7 +3,7 @@
 import { CldImage as CldImageDefault, CldImageProps as CldImagePropsDefault } from 'next-cloudinary';
 import { ImageProps } from 'next/image';
 
-const shimmerTheme: Record<string, { base: string; highlight: string; }> = {
+const shimmerTheme: Record<string, { base: string; highlight: string }> = {
   light: {
     base: '#e8e8e8',
     highlight: '#efefef',
@@ -12,7 +12,7 @@ const shimmerTheme: Record<string, { base: string; highlight: string; }> = {
     base: '#18181b',
     highlight: '#202023',
   },
-}
+};
 
 const shimmer = (w: number, h: number, placeholderStyle: string = 'light') => {
   const theme = shimmerTheme[placeholderStyle];
@@ -29,7 +29,7 @@ const shimmer = (w: number, h: number, placeholderStyle: string = 'light') => {
       <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
       <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
     </svg>
-  `
+  `;
 };
 
 function toBase64(str: string) {
@@ -42,14 +42,23 @@ interface CldImageProps extends CldImagePropsDefault {
   placeholderStyle?: string;
 }
 
-const CldImage = ({ placeholderStyle, ...props }: CldImageProps) => {
+const CldImage = ({ placeholderStyle, loading, priority, ...props }: CldImageProps) => {
   let dataUrl;
 
-  if ( typeof props.width === 'number' && typeof props.height === 'number' ) {
+  if (typeof props.width === 'number' && typeof props.height === 'number') {
     dataUrl = `data:image/svg+xml;base64,${toBase64(shimmer(props.width, props.height, placeholderStyle))}`;
   }
 
-  return <CldImageDefault {...props} placeholder={dataUrl as ImageProps["placeholder"]} />
-}
+  const resolvedLoading = loading ?? (priority ? undefined : 'lazy');
+
+  return (
+    <CldImageDefault
+      {...props}
+      priority={priority}
+      loading={resolvedLoading}
+      placeholder={dataUrl as ImageProps['placeholder']}
+    />
+  );
+};
 
 export default CldImage;
