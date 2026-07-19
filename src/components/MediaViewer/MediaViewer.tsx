@@ -1,12 +1,13 @@
 'use client';
 
-import {  useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Image, Ban, PencilRuler, ScissorsSquareDashedBottom, RectangleHorizontal, Square, RectangleVertical, Loader2, Copy, Star, History } from 'lucide-react';
+import { Blend, ChevronLeft, ChevronDown, Crop, Info, Pencil, Trash2, Wand2, Image as ImageIcon, Ban, PencilRuler, ScissorsSquareDashedBottom, RectangleHorizontal, Square, RectangleVertical, Loader2, Copy, Star, History } from 'lucide-react';
 import { getCldImageUrl, CldImageProps } from 'next-cloudinary';
 import { useMutation } from '@tanstack/react-query';
 
 import { getConfig } from '@/lib/config';
+import { getFilterPreviewPreset, getViewerPreset, hashTransformations } from '@/lib/delivery-presets';
 import { addCommas, cn, formatBytes } from '@/lib/utils';
 import { CloudinaryResource } from '@/types/cloudinary';
 
@@ -121,6 +122,9 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
   }
 
   const hasTransformations = !!Object.entries(transformations).length;
+  const viewerPreset = getViewerPreset(resource);
+  const filterPreviewPreset = getFilterPreviewPreset();
+  const transformationKey = hashTransformations(transformations);
 
   useKeydown({
     key: "Escape",
@@ -354,21 +358,21 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
   // a data attribute to provide an easy way to reference it on
   // multiple elements
 
-  useEffect(() => {
-    document.body.addEventListener('click', handleOnOutsideClick)
-    return () => {
-      document.body.removeEventListener('click', handleOnOutsideClick)
-    }
-  }, []);
-
-  function handleOnOutsideClick(event: MouseEvent) {
+  const handleOnOutsideClick = useCallback((event: MouseEvent) => {
     const excludedElements = Array.from(document.querySelectorAll('[data-exclude-close-on-click="true"]'));
     const clickedExcludedElement = excludedElements.filter(element => event.composedPath().includes(element)).length > 0;
 
     if ( !clickedExcludedElement ) {
       closeMenus();
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    document.body.addEventListener('click', handleOnOutsideClick)
+    return () => {
+      document.body.removeEventListener('click', handleOnOutsideClick)
+    }
+  }, [handleOnOutsideClick]);
 
   return (
     <>
@@ -411,7 +415,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
             className="w-full sm:w-3/4 grid grid-rows-[1fr_auto] bg-zinc-800 text-white border-0"
             data-exclude-close-on-click={true}
           >
-            <Tabs defaultValue="account">
+            <Tabs defaultValue="enhance">
               <TabsList className="grid grid-cols-3 w-full bg-transparent p-0">
                 <TabsTrigger value="enhance">
                   <Wand2 />
@@ -491,7 +495,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       className={`text-left justify-start w-full h-14 border-4 bg-zinc-700 ${!crop ? "border-white" : "border-transparent"}`}
                       onClick={() => setCrop(undefined)}
                     >
-                      <Image className="w-5 h-5 mr-3" />
+                      <ImageIcon className="w-5 h-5 mr-3" aria-hidden="true" />
                       <span className="text-[1.01rem]">Original</span>
                     </Button>
                   </li>
@@ -540,12 +544,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       onClick={() => setFilter(undefined)}
                     >
                       <CldImage
-                        width={300}
-                        height={300}
-                        crop={{
-                          type: "fill",
-                          source: true,
-                        }}
+                        {...filterPreviewPreset}
                         src={resource.public_id}
                         alt="No Filter"
                       />
@@ -557,12 +556,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       onClick={() => setFilter("sepia")}
                     >
                       <CldImage
-                        width={300}
-                        height={300}
-                        crop={{
-                          type: "fill",
-                          source: true,
-                        }}
+                        {...filterPreviewPreset}
                         src={resource.public_id}
                         alt="Sepia"
                         sepia
@@ -575,12 +569,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       onClick={() => setFilter("eucalyptus")}
                     >
                       <CldImage
-                        width={300}
-                        height={300}
-                        crop={{
-                          type: "fill",
-                          source: true,
-                        }}
+                        {...filterPreviewPreset}
                         src={resource.public_id}
                         alt="Eucalyptus"
                         effects={[
@@ -597,12 +586,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       onClick={() => setFilter("frost")}
                     >
                       <CldImage
-                        width={300}
-                        height={300}
-                        crop={{
-                          type: "fill",
-                          source: true,
-                        }}
+                        {...filterPreviewPreset}
                         src={resource.public_id}
                         alt="Frost"
                         effects={[
@@ -619,12 +603,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
                       onClick={() => setFilter("grayscale")}
                     >
                       <CldImage
-                        width={300}
-                        height={300}
-                        crop={{
-                          type: "fill",
-                          source: true,
-                        }}
+                        {...filterPreviewPreset}
                         src={resource.public_id}
                         alt="Grayscale"
                         grayscale
@@ -817,7 +796,10 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
         {/** Asset management navbar */}
 
-        <Container className="fixed z-10 top-0 left-0 w-full h-16 flex items-center justify-between gap-4 bg-gradient-to-b from-black">
+        <Container
+          className="fixed z-10 top-0 left-0 w-full h-16 flex items-center justify-between gap-4 bg-gradient-to-b from-black"
+          data-exclude-close-on-click="true"
+        >
           <div className="flex items-center gap-4">
             <ul>
               <li>
@@ -935,15 +917,14 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
         <div className="relative flex justify-center items-center align-center w-full h-full">
           <CldImage
-            key={`${JSON.stringify(transformations)}-${version}`}
+            key={`${transformationKey}-${version}`}
             className="object-contain"
-            width={resource.width}
-            height={resource.height}
             src={resource.public_id}
             alt={`Image ${resource.public_id}`}
             style={imgStyles}
             version={version}
             placeholderStyle="dark"
+            {...viewerPreset}
             {...transformations}
           />
         </div>
@@ -951,7 +932,7 @@ const MediaViewer = ({ resource }: { resource: CloudinaryResource }) => {
 
       {/** Confirmation dialog to display if there are unsaved edits */}
 
-      <Dialog open={showConfirmDialog}>
+      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent data-exclude-close-on-click={true}>
           <DialogHeader>
             <DialogTitle>Discard changes?</DialogTitle>
