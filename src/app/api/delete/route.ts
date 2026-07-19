@@ -1,20 +1,14 @@
-import { v2 as cloudinary } from 'cloudinary';
-
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { getCloudinary } from '@/lib/cloudinary-server';
+import { isReadOnlyMode } from '@/lib/upload-validation';
 
 export async function POST(request: Request) {
-  if ( process.env.NEXT_PUBLIC_PHOTOCRATE_MODE === 'read-only' ) {
-    return new Response('Unauthorized', {
-      status: 401
-    })
+  if (isReadOnlyMode()) {
+    return new Response('Unauthorized', { status: 401 });
   }
 
-  const requestFormData = await request.formData()
+  const requestFormData = await request.formData();
   const publicId = requestFormData.get('publicId') as string;
+  const cloudinary = getCloudinary();
 
   const results = await cloudinary.api.delete_resources([publicId]);
 
