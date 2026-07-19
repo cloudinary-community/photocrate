@@ -1,5 +1,5 @@
 import '@/app/globals.css';
-import { Image, Sparkles, Star, Trash } from 'lucide-react'
+import { Image as ImageIcon, Sparkles, Star, Trash } from 'lucide-react'
 
 import Nav from '@/components/Nav';
 import SidebarLinks from '@/components/SidebarLinks';
@@ -17,7 +17,7 @@ export default function RootLayout({
           <SidebarLinks
             links={[
               {
-                icon: <Image className="w-5 h-5" />,
+                icon: <ImageIcon className="w-5 h-5" aria-hidden="true" />,
                 label: 'Photos',
                 path: '/'
               },
