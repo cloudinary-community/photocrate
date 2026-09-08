@@ -18,7 +18,8 @@ const UploadButton = ({ children }: UploadButtonProps) => {
   const { assetsFolder, assetsTag, libraryTag } = getConfig();
 
   const { addResources } = useResources({
-    disableFetch: true
+    disableFetch: true,
+    tag: libraryTag
   });
 
   async function handleOnSuccess(results: CloudinaryUploadWidgetResults) {
