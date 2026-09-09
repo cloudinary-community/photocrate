@@ -81,10 +81,6 @@ export function validateParamsToSign(
     throw new UploadSigningError('Tags are required for signing');
   }
 
-  if (!sanitized.resource_type) {
-    sanitized.resource_type = 'image';
-  }
-
   return sanitized;
 }
 
