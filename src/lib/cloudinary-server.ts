@@ -1,5 +1,9 @@
 import { v2 as cloudinary } from 'cloudinary';
 
+import { isCloudinaryConfigured } from '@/lib/cloudinary-client';
+
+export { isCloudinaryConfigured };
+
 let configured = false;
 
 export function configureCloudinary() {
@@ -17,8 +21,4 @@ export function configureCloudinary() {
 
 export function getCloudinary() {
   return configureCloudinary();
-}
-
-export function isCloudinaryConfigured(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME);
 }
