@@ -44,7 +44,7 @@
     "autoprefixer": "^10.5.0",
     "eslint": "^8",
     "eslint-config-next": "^15.5.0",
-    "happy-dom": "^17.4.4",
+    "happy-dom": "^20.14.0",
     "jsdom": "^26.1.0",
     "msw": "^2.8.4",
     "postcss": "^8.5.0",
