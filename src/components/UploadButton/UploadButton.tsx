@@ -6,9 +6,11 @@ import { CloudinaryUploadWidgetResults } from 'next-cloudinary';
 
 import { useResources } from '@/hooks/use-resources';
 import { getConfig } from '@/lib/config';
+import { isCloudinaryConfigured } from '@/lib/cloudinary-client';
 import { CloudinaryResource } from '@/types/cloudinary';
 
 import CldUploadButton from "@/components/CldUploadButton";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface UploadButtonProps {
   children?: ReactNode
@@ -33,6 +35,27 @@ const UploadButton = ({ children }: UploadButtonProps) => {
     // @TODO: Toast
   }
 
+  const label = children || (
+    <span className="flex items-center">
+      <Upload className="mr-2 h-4 w-4" /> Upload
+    </span>
+  );
+
+  if (!isCloudinaryConfigured()) {
+    return (
+      <TooltipProvider delayDuration={200}>
+        <Tooltip>
+          <TooltipTrigger className="flex items-center text-zinc-400" aria-label="Uploading is disabled">
+            {label}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Cloudinary is not configured</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  }
+
   return (
     <CldUploadButton
       signatureEndpoint="/api/sign-cloudinary-params"
@@ -48,11 +71,7 @@ const UploadButton = ({ children }: UploadButtonProps) => {
       onSuccess={handleOnSuccess}
       onError={handleOnError}
     >
-      {children || (
-        <span className="flex items-center">
-          <Upload className="mr-2 h-4 w-4" /> Upload
-        </span>
-      )}
+      {label}
     </CldUploadButton>
   )
 }
