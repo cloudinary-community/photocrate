@@ -1,8 +1,12 @@
 import { getResourcebyAssetId } from '@/lib/cloudinary';
 
-export async function GET(request: Request, { params }: { params: { assetId: string } }) {
-  const resource = await getResourcebyAssetId(params?.assetId);
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ assetId: string }> }
+) {
+  const { assetId } = await params;
+  const resource = await getResourcebyAssetId(assetId);
   return Response.json({
-    data: resource
+    data: resource,
   });
 }

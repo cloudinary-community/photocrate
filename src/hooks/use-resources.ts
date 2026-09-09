@@ -1,8 +1,13 @@
 "use client";
 
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 
 import { CloudinaryResource } from '@/types/cloudinary';
+
+interface ResourcesPage {
+  data: Array<CloudinaryResource>;
+  nextCursor: string | null;
+}
 
 interface UseResources {
   disableFetch?: boolean;
@@ -13,50 +18,99 @@ interface UseResources {
 export function useResources(options?: UseResources) {
   const { initialResources, tag, disableFetch } = options || {};
   const queryClient = useQueryClient();
+  const queryKey = ['resources', tag] as const;
 
-  const { data: resources, ...rest }: { data: Array<CloudinaryResource> } = useQuery({
-    queryKey: ['resources', tag],
-    queryFn: async () => {
-      const { data } = await fetch(`/api/resources?tag=${tag}`).then(r => r.json());
-      return data;
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    ...rest
+  } = useInfiniteQuery({
+    queryKey,
+    queryFn: async ({ pageParam }) => {
+      const params = new URLSearchParams();
+      if (tag) params.set('tag', tag);
+      if (pageParam) params.set('cursor', pageParam);
+
+      const response = await fetch(`/api/resources?${params.toString()}`);
+      const json = await response.json();
+
+      return {
+        data: json.data as Array<CloudinaryResource>,
+        nextCursor: json.nextCursor as string | null,
+      };
     },
-    initialData: initialResources,
-    enabled: !disableFetch
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    initialData: initialResources
+      ? {
+          pages: [{ data: initialResources, nextCursor: null }],
+          pageParams: [undefined],
+        }
+      : undefined,
+    enabled: !disableFetch,
   });
 
-  // Create a new mutation instance that we'll use to update our resources in the query state
+  const resources = data?.pages.flatMap((page) => page.data) ?? [];
 
   const _addResources = useMutation({
-    mutationFn: async (resources: Array<CloudinaryResource>) => {
-      console.log(resources)
-      return resources
-    },
+    mutationFn: async (newResources: Array<CloudinaryResource>) => newResources,
     onMutate: async (newResources) => {
-      await queryClient.cancelQueries({ queryKey: ['resources'] })
+      await queryClient.cancelQueries({ queryKey });
 
-      const previousResources = queryClient.getQueryData(['resources'])
+      const previousData = queryClient.getQueryData<{
+        pages: Array<ResourcesPage>;
+        pageParams: Array<string | undefined>;
+      }>(queryKey);
 
-      queryClient.setQueryData(['resources'], (old: Array<CloudinaryResource>) => [...newResources, ...old])
+      queryClient.setQueryData(queryKey, (old: {
+        pages: Array<ResourcesPage>;
+        pageParams: Array<string | undefined>;
+      } | undefined) => {
+        if (!old) {
+          return {
+            pages: [{ data: newResources, nextCursor: null }],
+            pageParams: [undefined],
+          };
+        }
 
-      return { previousResources }
+        const [firstPage, ...restPages] = old.pages;
+
+        return {
+          ...old,
+          pages: [
+            {
+              data: [...newResources, ...(firstPage?.data ?? [])],
+              nextCursor: firstPage?.nextCursor ?? null,
+            },
+            ...restPages,
+          ],
+        };
+      });
+
+      return { previousData };
     },
-    onError: (err, newResources, context) => {
-      queryClient.setQueryData(['resources'], context?.previousResources)
+    onError: (_err, _newResources, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKey, context.previousData);
+      }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['resources'] })
+      queryClient.invalidateQueries({ queryKey });
     },
-  })
+  });
 
-  // Wrap the mutation function to a simpler API for application calls
-
-  function addResources(resources: Array<CloudinaryResource>) {
-    _addResources.mutate(resources);
+  function addResources(newResources: Array<CloudinaryResource>) {
+    _addResources.mutate(newResources);
   }
 
   return {
     ...rest,
     resources,
-    addResources
+    addResources,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   };
 }
