@@ -214,6 +214,6 @@ This project follows the [all-contributors](https://github.com/all-contributors/
 
 ## Cloudinary Community
 
-Connect with other developers on [Discord](https://discord.gg/cloudinary) or the [Community Forums](https://community.cloudinary.com/).
+Connect with other developers via our [Community](https://community.cloudinary.com/).
 
 Learn more at [cloudinary.com/documentation](https://cloudinary.com/documentation).
