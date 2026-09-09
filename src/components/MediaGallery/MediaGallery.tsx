@@ -5,9 +5,11 @@ import Link from 'next/link';
 import { Plus, X, Save, LayoutPanelLeft, Loader2, SquareStack, Droplet, Sparkles, Star, Upload } from 'lucide-react';
 
 import { useResources } from "@/hooks/use-resources";
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import { CloudinaryResource } from '@/types/cloudinary';
 import { getConfig } from '@/lib/config';
 import { getAnimation, getCollage, getColorPop } from "@/lib/creations";
+import { getCreationPreviewPreset, getThumbnailPreset } from '@/lib/delivery-presets';
 import { cn } from '@/lib/utils';
 
 import CldImage from '@/components/CldImage';
@@ -18,7 +20,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
-import { CldImageProps } from 'next-cloudinary';
 import { useKeydown } from '@/hooks/use-keydown';
 
 interface MediaGalleryProps {
@@ -34,7 +35,19 @@ interface Creation {
 
 const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) => {
   const { assetsTag, libraryTag, creationTag, favoritesTag, gallery } = getConfig();
-  const { resources, addResources } = useResources({ initialResources, tag });
+  const {
+    resources,
+    addResources,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useResources({ initialResources, tag });
+
+  const sentinelRef = useInfiniteScroll({
+    hasNextPage,
+    isFetchingNextPage,
+    onLoadMore: () => fetchNextPage(),
+  });
 
   const [selected, setSelected] = useState<Array<string>>([]);
   const [creation, setCreation] = useState<Creation>();
@@ -47,17 +60,9 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
     element: typeof document !== "undefined" ?  document.body : null
   });
 
-  /**
-   * handleOnClearSelection
-   */
-
   function handleOnClearSelection() {
     setSelected([]);
   }
-
-  /**
-   * handleOnCreateCollage
-   */
 
   async function handleOnCreateAnimation() {
     if ( !Array.isArray(selected) || selected.length <= 0 ) return;
@@ -69,10 +74,6 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
     });
   }
 
-  /**
-   * handleOnCreateCollage
-   */
-
   async function handleOnCreateCollage() {
     if ( !Array.isArray(selected) || selected.length <= 0 ) return;
     const url = getCollage(selected);
@@ -82,10 +83,6 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
       url,
     });
   }
-
-  /**
-   * handleOnCreateColorPop
-   */
 
   async function handleOnCreateColorPop() {
     if ( !Array.isArray(selected) || selected.length !== 1 ) return;
@@ -105,19 +102,11 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
     });
   }
 
-  /**
-   * handleOnCreationOpenChange
-   */
-
   function handleOnCreationOpenChange(isOpen: boolean) {
     if ( !isOpen ) {
       setCreation(undefined);
     }
   }
-
-  /**
-   * handleOnSaveCreation
-   */
 
   async function handleOnSaveCreation() {
     if ( typeof creation?.url !== 'string' || typeof creation?.type !== 'string' ) return;
@@ -137,8 +126,6 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
     formData.append('tags', assetsTag);
     formData.append('tags', libraryTag);
 
-    // Preload the URL transformation
-
     await fetch(creation.url);
 
     const resource = await fetch('/api/upload', {
@@ -153,10 +140,10 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
     handleOnClearSelection();
   }
 
+  const creationPreviewPreset = getCreationPreviewPreset();
+
   return (
     <>
-      {/** Popup modal used to preview and confirm new creations */}
-
       <Dialog open={!!creation} onOpenChange={handleOnCreationOpenChange}>
         <DialogContent>
           {creation?.state === 'creating' && (
@@ -173,10 +160,9 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                 {creation?.url && (
                   <CldImage
                     src={creation?.url}
-                    width={1200}
-                    height={1200}
                     alt="creation"
                     preserveTransformations
+                    {...creationPreviewPreset}
                   />
                 )}
               </div>
@@ -211,8 +197,6 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
           )}
         </DialogContent>
       </Dialog>
-
-      {/** Management navbar presented when assets are selected */}
 
       {selected.length > 0 && (
         <Container className="fixed z-50 top-0 left-0 w-full h-16 flex items-center justify-between gap-4 bg-white shadow-lg">
@@ -268,8 +252,6 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
         </Container>
       )}
 
-      {/** Gallery */}
-
       <Container>
 
         {Array.isArray(resources) && resources.length > 0 && (
@@ -277,17 +259,7 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
             <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 mb-12">
               {resources.map((resource) => {
                 const isChecked = selected.includes(resource.public_id);
-
-                const imageConfig: Omit<CldImageProps, "alt" | "src"> = {
-                  width: resource.width,
-                  height: resource.height,
-                }
-
-                if ( gallery?.crop === 'square' ) {
-                  imageConfig.width = 700;
-                  imageConfig.height = 700;
-                  imageConfig.crop = 'fill';
-                }
+                const imageConfig = getThumbnailPreset(resource, gallery);
 
                 function handleOnSelectResource(checked: boolean) {
                   setSelected((prev) => {
@@ -345,7 +317,6 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                           {...imageConfig}
                           src={resource.public_id}
                           alt={`Image ${resource.public_id}`}
-                          sizes="(min-width: 768px) calc(33.33vw - 4rem), (min-width: 1024px) calc(25vw - 3rem), (min-width: 1280px) calc(20vw - 2.4rem), 50vw"
                         />
                       </Link>
                     </div>
@@ -353,6 +324,11 @@ const MediaGallery = ({ resources: initialResources, tag }: MediaGalleryProps) =
                 )
               })}
             </ul>
+            <div ref={sentinelRef} className="flex justify-center py-8" aria-hidden="true">
+              {isFetchingNextPage && (
+                <Loader2 className="text-zinc-400 h-8 w-8 animate-spin" />
+              )}
+            </div>
           </form>
         )}
         {(!Array.isArray(resources) || resources.length === 0) && (
